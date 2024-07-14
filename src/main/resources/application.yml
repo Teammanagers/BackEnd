@@ -1,0 +1,111 @@
+### Base Spring Config
+# Spring Config
+spring:
+  config:
+    import: file:.env[.properties]
+  profiles:
+    active: default
+  application:
+    name: team-managers
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+    hikari:
+      data-source-properties:
+        rewriteBatchedStatements: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+        order_updates: true
+        order_inserts: true
+        jdbc:
+          batch_size: 100
+    open-in-view: false
+  sql:
+    init:
+      platform: mysql
+      mode: always
+
+#Debug Config
+debug: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+# Log Config
+logging:
+  level:
+    com.example.Practice: debug
+    org.springframework.web.servlet: debug
+    org.hibernate.type.descriptor.sql: trace
+
+# Exception Handle
+server:
+  error:
+    include-exception: true
+    include-stacktrace: always
+  port: 8080
+
+# JWT Config
+jwt:
+  secret-key: ${TOKEN_SECRET}
+  access:
+    expiration: ${ACCESS_TOKEN_EXPIRATION}
+    header: ${ACCESS_TOKEN_HEADER}
+  refresh:
+    expiration: ${REFRESH_TOKEN_EXPIRATION}
+    header: ${REFRESH_TOKEN_HEADER}
+
+# AWS Setting
+cloud:
+  aws:
+    s3:
+      bucket: ${BUCKET} # ?? ?? ??
+      path:
+        member-profile: ${BUCKET_MEMBER_PROFILE_FOLDER}
+        team-profile: ${BUCKET_TEAM_PROFILE_FOLDER}
+        team-data: ${BUCKET_TEAM_DATA_FOLDER}
+    region:
+      static: ap-northeast-2 # Region (? ??? ??)
+    stack:
+      auto: false
+    credentials:
+      accessKey: ${S3_ACCESS} # Access Key ?? ??
+      secretKey: ${S3_SECRET} # Secret Access Key ?? ??
+
+# Url Setting
+url:
+  be: ${BE_URL}
+  fe: ${FE_URL}
+
+---
+### Local Config
+spring:
+  config:
+    activate:
+      on-profile: local
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+---
+### Develop Config
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    hibernate:
+      ddl-auto: create
