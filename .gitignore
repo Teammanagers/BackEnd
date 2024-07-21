@@ -5,6 +5,9 @@
 # 환경 변수
 .env
 
+# QueryDSL
+src/main/generated
+
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
