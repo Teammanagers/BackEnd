@@ -21,9 +21,9 @@ public abstract class AuditingField {
     private LocalDateTime updatedAt;
 
     @Enumerated(value = EnumType.STRING)
-    private EntityStatus status = EntityStatus.ACTIVE;
+    private EntityStatus entityStatus = EntityStatus.ACTIVE;
 
     public void updateStatus(final EntityStatus status){
-        this.status = status;
+        this.entityStatus = status;
     }
 }
