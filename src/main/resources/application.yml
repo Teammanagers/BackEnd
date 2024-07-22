@@ -100,6 +100,11 @@ spring:
     hibernate:
       ddl-auto: create
 
+  data:
+    redis:
+      host: ${REDIS_URL}
+      port: ${REDIS_PORT}
+
 ---
 ### Develop Config
 spring:
@@ -109,3 +114,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+
+  data:
+    redis:
+      host: ${REDIS_URL}
+      port: ${REDIS_PORT}
