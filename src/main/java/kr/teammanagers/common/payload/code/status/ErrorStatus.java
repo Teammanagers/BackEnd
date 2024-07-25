@@ -16,6 +16,9 @@ public enum ErrorStatus implements ErrorBaseCode {
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "401", "인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "403", "금지된 요청입니다."),
     _NOT_FOUND(HttpStatus.NOT_FOUND, "404", "찾을 수 없습니다."),
+
+    // 팀관리 관련 응답
+    TEAM_MANAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "TEAMMANAGE4001", "존재하지 않는 팀관리입니다.")
     ;
 
     private final HttpStatus httpStatus;
