@@ -5,18 +5,19 @@ import kr.teammanagers.term.dto.CreateTerms;
 import kr.teammanagers.term.application.TermCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/terms")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class TermRestController {
 
     private final TermCommandService termCommandService;
 
-    @PostMapping
-    public ApiPayload<Void> create(CreateTerms request) {
+    @PostMapping("terms")
+    public ApiPayload<Void> create(@RequestBody CreateTerms request) {
 
         termCommandService.createTerms(request);
 

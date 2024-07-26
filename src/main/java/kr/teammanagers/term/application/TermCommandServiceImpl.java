@@ -8,9 +8,11 @@ import kr.teammanagers.term.dto.CreateTerms;
 import kr.teammanagers.term.repository.TermRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class TermCommandServiceImpl implements TermCommandService {
 
     private final TermRepository termRepository;
@@ -23,7 +25,7 @@ public class TermCommandServiceImpl implements TermCommandService {
                 .privacyPolicy(request.getPrivacyPolicy())
                 .build();
 
-        Long memberId = 1L;     //이후 수정
+        Long memberId = 1L;     //Todo: 이후 수정
         newCheckedTerms.setMember(memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND)));
 
