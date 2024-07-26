@@ -1,7 +1,8 @@
 package kr.teammanagers.todo.application;
 
 import kr.teammanagers.todo.dto.request.CreateTodo;
+import kr.teammanagers.todo.dto.response.GetTodoList;
 
 public interface TodoQueryService {
-    public void createTodo(CreateTodo request);
+    public GetTodoList getTodoList(Long teamId);
 }

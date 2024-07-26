@@ -24,8 +24,8 @@ public class TodoCommandServiceImpl implements TodoCommandService {
                 .status(Status.PROCEEDING)
                 .build();
 
-        newTodo.setTeamManage(teamManageRepository.findById(teamManageId).orElseThrow(
-                () -> new GeneralException(ErrorStatus.TEAM_MANAGE_NOT_FOUND)));
+        newTodo.setTeamManage(teamManageRepository.findById(teamManageId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TEAM_MANAGE_NOT_FOUND)));
 
         todoRepository.save(newTodo);
     }
