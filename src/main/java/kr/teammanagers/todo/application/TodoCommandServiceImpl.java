@@ -49,5 +49,11 @@ public class TodoCommandServiceImpl implements TodoCommandService {
         todoForUpdate.switchStatus();
     }
 
+    @Override
+    public void deleteTodo(Long todoId) {
+        todoRepository.delete(todoRepository.findById(todoId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TODO_NOT_FOUND)));
+    }
+
 
 }

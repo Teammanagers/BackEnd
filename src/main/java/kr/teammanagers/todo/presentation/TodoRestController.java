@@ -49,4 +49,12 @@ public class TodoRestController {
 
         return ApiPayload.onSuccess(null);
     }
+
+    @DeleteMapping("/todo/{todoId}")
+    public ApiPayload<Void> delete(@PathVariable Long todoId) {
+
+        todoCommandService.deleteTodo(todoId);
+
+        return ApiPayload.onSuccess(null);
+    }
 }
