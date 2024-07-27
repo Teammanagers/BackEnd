@@ -41,5 +41,13 @@ public class TodoCommandServiceImpl implements TodoCommandService {
         todoForUpdate.changeTitle(request.getTitle());
     }
 
+    @Override
+    public void updateTodoStatus(Long todoId) {
+        Todo todoForUpdate = todoRepository.findById(todoId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TODO_NOT_FOUND));
+
+        todoForUpdate.switchStatus();
+    }
+
 
 }

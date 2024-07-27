@@ -41,4 +41,12 @@ public class TodoRestController {
 
         return ApiPayload.onSuccess(null);
     }
+
+    @PatchMapping("/todo/{todoId}/state")
+    public ApiPayload<Void> updateStatus(@PathVariable Long todoId) {
+
+        todoCommandService.updateTodoStatus(todoId);
+
+        return ApiPayload.onSuccess(null);
+    }
 }
