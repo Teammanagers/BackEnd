@@ -21,7 +21,10 @@ public enum ErrorStatus implements ErrorBaseCode {
     TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "TEAM4001", "존재하지 않는 팀입니다."),
 
     // 팀관리 관련 응답
-    TEAM_MANAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "TEAMMANAGE4001", "존재하지 않는 팀관리입니다.")
+    TEAM_MANAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "TEAMMANAGE4001", "존재하지 않는 팀관리입니다."),
+
+    //투두 관련 응답
+    TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "TODO4001", "존재하지 않는 투두입니다.")
     ;
 
     private final HttpStatus httpStatus;

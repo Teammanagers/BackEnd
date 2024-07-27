@@ -33,4 +33,8 @@ public class Todo extends AuditingField {
         this.title = title;
         this.status = status;
     }
+
+    public void changeTitle(final String title) {
+        this.title = title;
+    }
 }

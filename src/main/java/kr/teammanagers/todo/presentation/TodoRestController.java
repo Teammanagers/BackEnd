@@ -4,6 +4,7 @@ import kr.teammanagers.common.payload.code.ApiPayload;
 import kr.teammanagers.todo.application.TodoCommandService;
 import kr.teammanagers.todo.application.TodoQueryService;
 import kr.teammanagers.todo.dto.request.CreateTodo;
+import kr.teammanagers.todo.dto.request.UpdateTodo;
 import kr.teammanagers.todo.dto.response.GetTodoList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +31,14 @@ public class TodoRestController {
         GetTodoList getTodoList = todoQueryService.getTodoList(teamId);
 
         return ApiPayload.onSuccess(getTodoList);
+    }
+
+    @PatchMapping("/todo/{todoId}")
+    public ApiPayload<Void> updateTitle(@RequestBody UpdateTodo request,
+                                        @PathVariable Long todoId) {
+        //Todo: 수정된 Todo 리턴 안해도 되나?
+        todoCommandService.updateTodoTitle(request, todoId);
+
+        return ApiPayload.onSuccess(null);
     }
 }
