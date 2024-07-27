@@ -21,8 +21,18 @@ public record ApiPayload<T>(
         return new ApiPayload<>(
                 true,
                 SuccessStatus._OK.getCode(),
-                SuccessStatus._ACCEPTED.getMessage(),
+                SuccessStatus._OK.getMessage(),
                 result
+        );
+    }
+
+    // Success : No result
+    public static <T> ApiPayload<T> onSuccess() {
+        return new ApiPayload<>(
+                true,
+                SuccessStatus._OK.getCode(),
+                SuccessStatus._OK.getMessage(),
+                null
         );
     }
 
@@ -30,7 +40,7 @@ public record ApiPayload<T>(
         return new ApiPayload<>(
                 true,
                 SuccessStatus._OK.getCode(),
-                SuccessStatus._ACCEPTED.getMessage(),
+                SuccessStatus._OK.getMessage(),
                 result
         );
     }
