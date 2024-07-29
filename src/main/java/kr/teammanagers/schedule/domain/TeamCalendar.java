@@ -6,10 +6,10 @@ import kr.teammanagers.team.domain.TeamManage;
 import lombok.*;
 
 @Entity
-@Table(name = "team_schedule")
+@Table(name = "team_calendar")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class TeamSchedule extends AuditingField {
+public class TeamCalendar extends AuditingField {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,8 +21,8 @@ public class TeamSchedule extends AuditingField {
     // Mapping
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id")
-    private Schedule schedule;
+    @JoinColumn(name = "calendar_id")
+    private Calendar schedule;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,7 +30,7 @@ public class TeamSchedule extends AuditingField {
     private TeamManage teamManage;
 
     @Builder
-    private TeamSchedule(final Boolean isAlarmed) {
+    private TeamCalendar(final Boolean isAlarmed) {
         this.isAlarmed = isAlarmed;
     }
 }

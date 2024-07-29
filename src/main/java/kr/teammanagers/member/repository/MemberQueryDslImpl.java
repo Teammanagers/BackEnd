@@ -1,4 +1,11 @@
 package kr.teammanagers.member.repository;
 
-public class MemberQueryDslImpl implements MemberQueryDsl{
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class MemberQueryDslImpl implements MemberQueryDsl {
+
+    private final JPAQueryFactory queryFactory;
+
 }

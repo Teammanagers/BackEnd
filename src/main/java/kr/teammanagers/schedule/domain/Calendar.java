@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "schedule")
+@Table(name = "calendar")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Schedule extends AuditingField {
+public class Calendar extends AuditingField {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class Schedule extends AuditingField {
     private Status status;
 
     @Builder
-    private Schedule(final String title, final String content, final LocalDateTime date, final Status status) {
+    private Calendar(final String title, final String content, final LocalDateTime date, final Status status) {
         this.title = title;
         this.content = content;
         this.date = date;

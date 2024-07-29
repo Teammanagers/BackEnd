@@ -46,4 +46,12 @@ public class Member extends AuditingField {
         this.phoneNumber = phoneNumber;
         this.belong = belong;
     }
+
+    public void updateBelong(final String belong) {
+        this.belong = belong;
+    }
+
+    public void updateImageUrl(final String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }
