@@ -19,14 +19,14 @@ public class TodoRestController {
 
     @PostMapping("/team/{teamManageId}/todo")
     public ApiPayload<Void> create(@RequestBody CreateTodo request,
-                                   @PathVariable Long teamManageId) {
+                                   @PathVariable(name = "teamManageId") Long teamManageId) {
 
         todoCommandService.createTodo(request, teamManageId);
         return ApiPayload.onSuccess(null);
     }
 
     @GetMapping("/team/{teamId}/todo")
-    public ApiPayload<GetTodoList> get(@PathVariable Long teamId) {
+    public ApiPayload<GetTodoList> get(@PathVariable(name = "teamId") Long teamId) {
 
         GetTodoList getTodoList = todoQueryService.getTodoList(teamId);
 
@@ -35,7 +35,7 @@ public class TodoRestController {
 
     @PatchMapping("/todo/{todoId}")
     public ApiPayload<Void> updateTitle(@RequestBody UpdateTodo request,
-                                        @PathVariable Long todoId) {
+                                        @PathVariable(name = "todoId") Long todoId) {
         //Todo: 수정된 Todo 리턴 안해도 되나?
         todoCommandService.updateTodoTitle(request, todoId);
 
@@ -43,7 +43,7 @@ public class TodoRestController {
     }
 
     @PatchMapping("/todo/{todoId}/state")
-    public ApiPayload<Void> updateStatus(@PathVariable Long todoId) {
+    public ApiPayload<Void> updateStatus(@PathVariable(name = "todoId") Long todoId) {
 
         todoCommandService.updateTodoStatus(todoId);
 
@@ -51,7 +51,7 @@ public class TodoRestController {
     }
 
     @DeleteMapping("/todo/{todoId}")
-    public ApiPayload<Void> delete(@PathVariable Long todoId) {
+    public ApiPayload<Void> delete(@PathVariable(name = "todoId") Long todoId) {
 
         todoCommandService.deleteTodo(todoId);
 

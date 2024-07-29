@@ -76,7 +76,7 @@ public class TodoQueryServiceImpl implements TodoQueryService {
         }
 
 
-        Integer progress = numOfTodoCompleted / numOfTodo;   //todo: progress 계산 추가
+        Integer progress = numOfTodoCompleted / numOfTodo * 100;   //todo: progress 계산 추가
 
         return GetTodoList.builder()
                 .teamTodoList(teamTodoListDtoList)

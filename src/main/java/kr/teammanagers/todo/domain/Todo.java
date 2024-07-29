@@ -20,6 +20,7 @@ public class Todo extends AuditingField {
     private String title;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     // Mapping
