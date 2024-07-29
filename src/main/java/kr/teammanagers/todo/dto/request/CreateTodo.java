@@ -1,8 +1,15 @@
 package kr.teammanagers.todo.dto.request;
 
-import lombok.Getter;
+import kr.teammanagers.common.Status;
+import kr.teammanagers.todo.domain.Todo;
 
-@Getter
-public class CreateTodo {
-    private String title;
+public record CreateTodo(
+        String title
+) {
+    public static Todo from(CreateTodo createTodo) {
+        return Todo.builder()
+                .title(createTodo.title())
+                .status(Status.PROCEEDING)
+                .build();
+    }
 }

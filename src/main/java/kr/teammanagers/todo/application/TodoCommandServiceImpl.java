@@ -22,10 +22,7 @@ public class TodoCommandServiceImpl implements TodoCommandService {
 
     @Override
     public void createTodo(CreateTodo request, Long teamManageId) {
-        Todo newTodo = Todo.builder()
-                .title(request.getTitle())
-                .status(Status.PROCEEDING)
-                .build();
+        Todo newTodo = CreateTodo.from(request);
 
         newTodo.setTeamManage(teamManageRepository.findById(teamManageId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TEAM_MANAGE_NOT_FOUND)));
@@ -38,7 +35,7 @@ public class TodoCommandServiceImpl implements TodoCommandService {
         Todo todoForUpdate = todoRepository.findById(todoId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TODO_NOT_FOUND));
 
-        todoForUpdate.changeTitle(request.getTitle());
+        todoForUpdate.changeTitle(request.title());
     }
 
     @Override

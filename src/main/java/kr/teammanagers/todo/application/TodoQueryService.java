@@ -4,5 +4,5 @@ import kr.teammanagers.todo.dto.request.CreateTodo;
 import kr.teammanagers.todo.dto.response.GetTodoList;
 
 public interface TodoQueryService {
-    public GetTodoList getTodoList(Long teamId);
+    GetTodoList getTodoList(Long teamId);
 }
