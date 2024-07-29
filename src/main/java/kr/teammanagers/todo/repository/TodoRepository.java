@@ -10,5 +10,4 @@ import java.util.List;
 public interface TodoRepository extends JpaRepository<Todo, Long>, TodoQueryDsl {
     List<Todo> findAllByTeamManage(TeamManage teamManage);
 
-
 }

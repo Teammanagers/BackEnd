@@ -31,7 +31,7 @@ public class AmazonS3Provider {
         try {
             amazonS3.putObject(new PutObjectRequest(amazonConfig.getBucket(), keyName, file.getInputStream(), metadata));
         } catch (IOException e) {
-            log.error(AmazonConstant.FILE_UPLODAD_ERROR + ": {}", (Object) e.getStackTrace());
+            log.error(AmazonConstant.FILE_UPLOAD_ERROR + ": {}", (Object) e.getStackTrace());
         }
         return amazonS3.getUrl(amazonConfig.getBucket(), keyName).toString();
     }
@@ -48,7 +48,7 @@ public class AmazonS3Provider {
             amazonS3.putObject(new PutObjectRequest(amazonConfig.getBucket(), keyName + ext, file.getInputStream(), metadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
-            log.error(AmazonConstant.FILE_UPLODAD_ERROR + ": {}", (Object) e.getStackTrace());
+            log.error(AmazonConstant.FILE_UPLOAD_ERROR + ": {}", (Object) e.getStackTrace());
         }
         return amazonS3.getUrl(amazonConfig.getBucket(), keyName + ext).toString();
     }

@@ -3,10 +3,7 @@ package kr.teammanagers.tag.domain;
 import jakarta.persistence.*;
 import kr.teammanagers.common.AuditingField;
 import kr.teammanagers.team.domain.TeamManage;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "role")
@@ -28,4 +25,10 @@ public class TeamRole extends AuditingField {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_mange_id")
     private TeamManage teamManage;
+
+    @Builder
+    private TeamRole(final Tag tag, final TeamManage teamManage) {
+        this.tag = tag;
+        this.teamManage = teamManage;
+    }
 }

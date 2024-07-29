@@ -6,9 +6,15 @@ import lombok.Getter;
 
 import java.util.List;
 
-@Getter
 @Builder
-public class GetTodoList {
-    List<TodoListDto> teamTodoList;
-    Integer progress;
+public record GetTodoList(
+        List<TodoListDto> teamTodoList,
+        Integer progress
+) {
+    public static GetTodoList of(List<TodoListDto> teamTodoList, Integer progress) {
+        return GetTodoList.builder()
+                .teamTodoList(teamTodoList)
+                .progress(progress)
+                .build();
+    }
 }

@@ -2,7 +2,7 @@ package kr.teammanagers.alarm.domain;
 
 import jakarta.persistence.*;
 import kr.teammanagers.common.AuditingField;
-import kr.teammanagers.schedule.domain.TeamSchedule;
+import kr.teammanagers.schedule.domain.TeamCalendar;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -30,7 +30,7 @@ public class Alarm extends AuditingField {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_schedule_id")
-    private TeamSchedule teamSchedule;
+    private TeamCalendar teamSchedule;
 
     @Builder
     private Alarm(final String title, final String content, final LocalDate date) {

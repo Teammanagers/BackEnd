@@ -1,7 +1,7 @@
 package kr.teammanagers.todo.application;
 
 import kr.teammanagers.common.Status;
-import kr.teammanagers.common.payload.code.GeneralException;
+import kr.teammanagers.global.exception.GeneralException;
 import kr.teammanagers.common.payload.code.status.ErrorStatus;
 import kr.teammanagers.team.repository.TeamManageRepository;
 import kr.teammanagers.todo.domain.Todo;

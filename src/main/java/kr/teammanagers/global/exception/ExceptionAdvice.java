@@ -1,8 +1,9 @@
-package kr.teammanagers.common.payload.code;
+package kr.teammanagers.global.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import kr.teammanagers.common.payload.code.ApiPayload;
 import kr.teammanagers.common.payload.code.dto.ErrorReasonDto;
 import kr.teammanagers.common.payload.code.status.ErrorStatus;
 import org.springframework.http.HttpHeaders;
