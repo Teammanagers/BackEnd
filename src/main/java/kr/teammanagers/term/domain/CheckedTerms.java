@@ -3,6 +3,7 @@ package kr.teammanagers.term.domain;
 import jakarta.persistence.*;
 import kr.teammanagers.common.AuditingField;
 import kr.teammanagers.member.domain.Member;
+import kr.teammanagers.term.dto.CreateTerms;
 import lombok.*;
 
 @Entity
@@ -31,5 +32,12 @@ public class CheckedTerms extends AuditingField {
     private CheckedTerms(final Boolean termsOfUse, final Boolean privacyPolicy) {
         this.termsOfUse = termsOfUse;
         this.privacyPolicy = privacyPolicy;
+    }
+
+    public static CheckedTerms from(final CreateTerms createTerms) {
+        return CheckedTerms.builder()
+                .privacyPolicy(createTerms.getPrivacyPolicy())
+                .termsOfUse(createTerms.getTermsOfUse())
+                .build();
     }
 }
