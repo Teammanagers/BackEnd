@@ -1,4 +1,4 @@
-package kr.teammanagers.common.payload.code;
+package kr.teammanagers.global.exception;
 
 import kr.teammanagers.common.payload.code.base.ErrorBaseCode;
 import kr.teammanagers.common.payload.code.dto.ErrorReasonDto;

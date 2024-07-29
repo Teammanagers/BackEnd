@@ -1,7 +1,7 @@
 package kr.teammanagers.term.application;
 
-import kr.teammanagers.common.payload.code.GeneralException;
 import kr.teammanagers.common.payload.code.status.ErrorStatus;
+import kr.teammanagers.global.exception.GeneralException;
 import kr.teammanagers.member.repository.MemberRepository;
 import kr.teammanagers.term.domain.CheckedTerms;
 import kr.teammanagers.term.dto.CreateTerms;
@@ -20,7 +20,7 @@ public class TermCommandServiceImpl implements TermCommandService {
 
     @Override
     public void createTerms(CreateTerms request) {
-        CheckedTerms newCheckedTerms = CheckedTerms.from(request);
+        CheckedTerms newCheckedTerms = CreateTerms.from(request);
 
         Long memberId = 1L;     //Todo: 이후 수정
         newCheckedTerms.setMember(memberRepository.findById(memberId)

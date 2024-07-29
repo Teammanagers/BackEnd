@@ -16,14 +16,10 @@ public class TermRestController {
 
     private final TermCommandService termCommandService;
 
-    @PostMapping("terms")
-    public ApiPayload<Void> create(@RequestBody CreateTerms request) {
+    @PostMapping("/terms")
+    public ApiPayload<Void> create(@RequestBody final CreateTerms request) {
 
         termCommandService.createTerms(request);
-
-        return ApiPayload.onSuccess(null);
+        return ApiPayload.onSuccess();
     }
-
-
-
 }
