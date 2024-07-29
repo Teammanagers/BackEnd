@@ -59,7 +59,24 @@ public class TodoQueryServiceImpl implements TodoQueryService {
             teamTodoListDtoList.add(newTodoListDto);
         }   //todo: tagDtoList 추가
 
-        Integer progress = 1;   //todo: progress 계산 추가
+        Integer numOfTodo = 0;
+        Integer numOfTodoCompleted = 0;
+
+        for (List<Todo> list : teamTodoList) {
+            numOfTodo += list.size();
+        }
+
+        List<List<Todo>> completedTeamTodoList = teamTodoList.stream()
+                .map(todoList -> { return todoList.stream()
+                        .filter(todo -> { return todo.checkCompleted(todo); }).collect(Collectors.toList()); })
+                .collect(Collectors.toList());
+
+        for (List<Todo> list : completedTeamTodoList) {
+            numOfTodoCompleted += list.size();
+        }
+
+
+        Integer progress = numOfTodoCompleted / numOfTodo;   //todo: progress 계산 추가
 
         return GetTodoList.builder()
                 .teamTodoList(teamTodoListDtoList)

@@ -42,4 +42,8 @@ public class Todo extends AuditingField {
         if (this.status == Status.PROCEEDING) this.status = Status.COMPLETED;
         else this.status = Status.PROCEEDING;
     }
+
+    public Boolean checkCompleted(Todo todo) {
+        return todo.status == Status.COMPLETED;
+    }
 }
