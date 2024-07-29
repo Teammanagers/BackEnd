@@ -34,4 +34,14 @@ public class Todo extends AuditingField {
         this.title = title;
         this.status = status;
     }
+
+    public void changeTitle(final String title) {
+        this.title = title;
+    }
+
+    public void switchStatus() {
+        if (this.status == Status.PROCEEDING) this.status = Status.COMPLETED;
+        else this.status = Status.PROCEEDING;
+    }
+
 }

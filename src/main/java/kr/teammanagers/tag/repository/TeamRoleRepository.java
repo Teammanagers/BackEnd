@@ -1,6 +1,7 @@
 package kr.teammanagers.tag.repository;
 
 import kr.teammanagers.tag.domain.TeamRole;
+import kr.teammanagers.team.domain.TeamManage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
