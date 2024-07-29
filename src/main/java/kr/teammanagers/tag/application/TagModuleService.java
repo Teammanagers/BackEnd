@@ -5,10 +5,7 @@ import kr.teammanagers.tag.domain.ConfidentRole;
 import kr.teammanagers.tag.domain.Tag;
 import kr.teammanagers.tag.domain.TagTeam;
 import kr.teammanagers.tag.domain.TeamRole;
-import kr.teammanagers.tag.repository.ConfidentRoleRepository;
-import kr.teammanagers.tag.repository.TagRepository;
-import kr.teammanagers.tag.repository.TagTeamRepository;
-import kr.teammanagers.team.repository.TeamRoleRepository;
+import kr.teammanagers.tag.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +21,7 @@ public class TagModuleService {
     private final ConfidentRoleRepository confidentRoleRepository;
     private final TagTeamRepository tagTeamRepository;
     private final TeamRoleRepository teamRoleRepository;
+    private final TagMemoRepository tagMemoRepository;
 
     public List<Tag> getAllConfidentRole(final Long authId) {
         return confidentRoleRepository.findAllByMemberId(authId).stream()
@@ -43,31 +41,54 @@ public class TagModuleService {
                 .toList();
     }
 
-    public void createConfidentRole(final String tagName, final Member member) {
-        tagRepository.findByName(tagName).ifPresentOrElse(tag -> {
-                    confidentRoleRepository.save(ConfidentRole.builder()
-                            .member(member)
-                            .tag(tag)
-                            .build()
-                    );
-                },
-                () -> {
-                    Tag tag = tagRepository.save(Tag.builder()
-                            .name(tagName)
-                            .build());
-                    confidentRoleRepository.save(ConfidentRole.builder()
-                            .member(member)
-                            .tag(tag)
-                            .build()
-                    );
+    public void saveConfidentRole(final Tag tag, final Member member) {
+        confidentRoleRepository.save(
+                ConfidentRole.builder()
+                        .member(member)
+                        .tag(tag)
+                        .build()
+        );
+    }
+
+    public Tag findOrCreateTag(final String tagName) {
+        return tagRepository.findByName(tagName).orElseGet(() ->
+                tagRepository.save(
+                        Tag.builder()
+                                .name(tagName)
+                                .build()
+                )
+        );
+    }
+
+    public void validateAndDeleteTagByTagId(final Long tagId) {
+        if (!isTagInUse(tagId)) {
+            tagRepository.deleteById(tagId);
+        }
+    }
+
+    private boolean isTagInUse(Long tagId) {
+        return tagTeamRepository.existsByTagId(tagId) ||
+                confidentRoleRepository.existsByTagId(tagId) ||
+                tagMemoRepository.existsByTagId(tagId) ||
+                teamRoleRepository.existsByTagId(tagId);
+    }
+
+    public void addNewConfidentRoles(final List<String> requestedRoles, final List<String> currentRoleNames, final Member member) {
+        requestedRoles.stream()
+                .filter(role -> !currentRoleNames.contains(role))
+                .forEach(tagName -> {
+                    Tag tag = findOrCreateTag(tagName);
+                    saveConfidentRole(tag, member);
                 });
     }
 
-    public void deleteConfidentRole(final ConfidentRole confidentRole) {
-        Long tagId = confidentRole.getTag().getId();
-        confidentRoleRepository.delete(confidentRole);
-        if (!confidentRoleRepository.existsByTagId(tagId)) {
-            tagRepository.deleteById(tagId);
-        }
+    public void removeOldConfidentRoles(final List<String> requestedRoles, final List<ConfidentRole> currentRoles) {
+        currentRoles.stream()
+                .filter(role -> !requestedRoles.contains(role.getTag().getName()))
+                .forEach(confidentRole -> {
+                    Long tagId = confidentRole.getTag().getId();
+                    confidentRoleRepository.delete(confidentRole);
+                    validateAndDeleteTagByTagId(tagId);
+                });
     }
 }

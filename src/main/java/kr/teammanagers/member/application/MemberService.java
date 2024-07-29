@@ -22,14 +22,12 @@ import kr.teammanagers.team.domain.TeamManage;
 import kr.teammanagers.team.repository.TeamManageRepository;
 import kr.teammanagers.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -54,33 +52,16 @@ public class MemberService {
 
     @Transactional
     public void updateProfile(final Long authId, final UpdateProfile request, final MultipartFile imageFile) {
-       log.info("imageFile: {}", imageFile);
         Member member = memberRepository.findById(authId).orElseThrow(RuntimeException::new);       // TODO : 예외 처리 필요
-        if (request.belong() != null) {
-            member.updateBelong(request.belong());
-        }
-        if (request.confidentRole() != null) {
-            List<ConfidentRole> currentConfidentRoleList = confidentRoleRepository.findAllByMemberId(member.getId());
 
-            request.confidentRole().stream()
-                    .filter(tagName -> !currentConfidentRoleList.stream()
-                            .map(confidentRole -> confidentRole.getTag().getName())
-                            .toList().contains(tagName)
-                    )
-                    .forEach(tagName -> tagModuleService.createConfidentRole(tagName, member));
-
-            currentConfidentRoleList.stream()
-                    .filter(tag -> !request.confidentRole().contains(tag.getTag().getName()))
-                    .forEach(tagModuleService::deleteConfidentRole);
-        }
-        if (imageFile != null) {
-            updateProfileImage(imageFile, member);
-        }
+        updateMemberBelong(request.belong(), member);
+        updateConfidentRoles(request.confidentRole(), member);
+        updateProfileImageIfPresent(imageFile, member);
     }
 
 
     @Transactional
-    public void updateCommentState(final Long authId, final Long commentId) {
+    public void updateCommentState(final Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(RuntimeException::new);     // TODO : 예외 처리 필요
         comment.updateIsHidden();
     }
@@ -111,7 +92,7 @@ public class MemberService {
                 .flatMap(teamManage -> teamDataRepository.findAllByTeamManageId(teamManage.getId()).stream())
                 .toList();
 
-        return GetPortfolio.from(team, tagModuleService.getAllTeamTag(teamId), memberList, teamRoleList, teamDataList);
+        return GetPortfolio.of(team, tagModuleService.getAllTeamTag(teamId), memberList, teamRoleList, teamDataList);
     }
 
 
@@ -120,7 +101,7 @@ public class MemberService {
         List<Team> teamList = teamManageRepository.findAllByMemberId(authId).stream()
                 .map(TeamManage::getTeam)
                 .toList();
-        return GetMemberTeam.from(member, teamList);
+        return GetMemberTeam.of(member, teamList);
     }
 
     private void updateProfileImage(final MultipartFile imageFile, final Member member) {
@@ -130,5 +111,31 @@ public class MemberService {
         }
         member.updateImageUrl(amazonS3Provider.uploadImage(
                 amazonS3Provider.generateKeyName(amazonConfig.getMemberProfilePath()), imageFile));
+    }
+
+    private void updateMemberBelong(final String belong, final Member member) {
+        if (belong != null) {
+            member.updateBelong(belong);
+        }
+    }
+
+    private void updateConfidentRoles(final List<String> requestedRoles, final Member member) {
+        if (requestedRoles == null) {
+            return;
+        }
+
+        List<ConfidentRole> currentRoles = confidentRoleRepository.findAllByMemberId(member.getId());
+        List<String> currentRoleNames = currentRoles.stream()
+                .map(role -> role.getTag().getName())
+                .toList();
+
+        tagModuleService.addNewConfidentRoles(requestedRoles, currentRoleNames, member);
+        tagModuleService.removeOldConfidentRoles(requestedRoles, currentRoles);
+    }
+
+    private void updateProfileImageIfPresent(final MultipartFile imageFile, final Member member) {
+        if (imageFile != null && !imageFile.isEmpty()) {
+            updateProfileImage(imageFile, member);
+        }
     }
 }

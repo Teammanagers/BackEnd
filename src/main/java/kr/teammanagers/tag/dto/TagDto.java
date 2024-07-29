@@ -9,7 +9,7 @@ public record TagDto(
         String name
 ) {
 
-    public static TagDto of(final Tag tag) {
+    public static TagDto from(final Tag tag) {
         return TagDto.builder()
                 .tagId(tag.getId())
                 .name(tag.getName())

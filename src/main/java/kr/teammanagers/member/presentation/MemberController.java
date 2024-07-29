@@ -42,7 +42,7 @@ public class MemberController {
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @PathVariable(name = "commentId") final Long commentId
     ) {
-        memberService.updateCommentState(1L, commentId);            // TODO : 인증 객체 구현시 auth.id로 변경 필요
+        memberService.updateCommentState(commentId);            // TODO : 인증 객체 구현시 auth.id로 변경 필요
         return ApiPayload.onSuccess();
     }
 

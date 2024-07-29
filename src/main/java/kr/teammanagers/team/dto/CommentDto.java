@@ -10,7 +10,7 @@ public record CommentDto(
         Boolean isHidden
 ) {
 
-    public static CommentDto of(final Comment comment) {
+    public static CommentDto from(final Comment comment) {
         return CommentDto.builder()
                 .commentId(comment.getId())
                 .content(comment.getContent())
