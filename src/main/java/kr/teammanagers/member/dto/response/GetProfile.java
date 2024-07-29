@@ -25,12 +25,12 @@ public record GetProfile(
                 .belong(member.getBelong())
                 .confidentRole(
                         tagList.stream()
-                                .map(TagDto::of)
+                                .map(TagDto::from)
                                 .toList()
                 )
                 .commentList(
                         commentList.stream()
-                                .map(CommentDto::of)
+                                .map(CommentDto::from)
                                 .toList()
                 )
                 .build();

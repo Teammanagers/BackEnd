@@ -22,7 +22,7 @@ public record GetPortfolio(
         List<StorageDto> storageList
 ) {
 
-    public static GetPortfolio from(final Team team, final List<Tag> teamTagList, final List<Member> memberList, final List<Tag> teamRoleList, final List<TeamData> storageList) {
+    public static GetPortfolio of(final Team team, final List<Tag> teamTagList, final List<Member> memberList, final List<Tag> teamRoleList, final List<TeamData> storageList) {
         return GetPortfolio.builder()
                 .teamId(team.getId())
                 .name(team.getTitle())

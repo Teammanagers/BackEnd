@@ -13,7 +13,7 @@ public record GetMemberTeam(
         List<TeamDto> teamList
 ) {
 
-    public static GetMemberTeam from(final Member member, final List<Team> teamList) {
+    public static GetMemberTeam of(final Member member, final List<Team> teamList) {
         return GetMemberTeam.builder()
                 .name(member.getName())
                 .teamList(teamList.stream()
