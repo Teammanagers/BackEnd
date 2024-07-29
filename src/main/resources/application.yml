@@ -5,7 +5,6 @@ spring:
     import: file:.env[.properties]
   profiles:
     active: default
-    include: oauth
   application:
     name: team-managers
   datasource:
