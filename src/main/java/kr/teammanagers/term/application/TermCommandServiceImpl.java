@@ -20,10 +20,7 @@ public class TermCommandServiceImpl implements TermCommandService {
 
     @Override
     public void createTerms(CreateTerms request) {
-        CheckedTerms newCheckedTerms = CheckedTerms.builder()
-                .termsOfUse(request.getTermsOfUse())
-                .privacyPolicy(request.getPrivacyPolicy())
-                .build();
+        CheckedTerms newCheckedTerms = CheckedTerms.from(request);
 
         Long memberId = 1L;     //Todo: 이후 수정
         newCheckedTerms.setMember(memberRepository.findById(memberId)
