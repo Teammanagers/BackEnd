@@ -4,10 +4,13 @@ import kr.teammanagers.team.domain.TeamManage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TeamManageRepository extends JpaRepository<TeamManage, Long> {
 
     List<TeamManage> findAllByMemberId(Long memberId);
 
     List<TeamManage> findAllByTeamId(Long teamId);
+
+    Optional<TeamManage> findByTeamIdAndMemberId(Long teamId, Long memberId);
 }

@@ -1,12 +1,23 @@
 package kr.teammanagers.calendar.dto.request;
 
-import java.time.LocalDate;
+import kr.teammanagers.calendar.domain.Calendar;
+import kr.teammanagers.common.Status;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record CreateCalendar(
-        LocalDate date,
+        LocalDateTime date,
         String title,
         List<String> participants,
         String content
 ) {
+    public Calendar toCalendar() {
+        return Calendar.builder()
+                .date(this.date)
+                .title(this.title)
+                .content(this.content)
+                .status(Status.PROCEEDING)
+                .build();   //Todo: Calendar에 participants 추가 필요
+    }
 }

@@ -7,6 +7,6 @@ public record CalendarDetailDto(
         String title,
         String content,
         List<String> participants,
-        Boolean isAlarm
+        Boolean isAlarmed
 ) {
 }

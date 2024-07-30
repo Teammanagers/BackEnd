@@ -29,6 +29,7 @@ public class Calendar extends AuditingField {
     private LocalDateTime date;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @Builder

@@ -8,7 +8,7 @@ public record CalendarDto(
         Long calendarId,
         String title,
         Status status,
-        Boolean isAlarm,
+        Boolean isAlarmed,
         LocalDate date
 ) {
 }
