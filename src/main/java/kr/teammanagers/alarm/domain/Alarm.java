@@ -2,7 +2,7 @@ package kr.teammanagers.alarm.domain;
 
 import jakarta.persistence.*;
 import kr.teammanagers.common.AuditingField;
-import kr.teammanagers.schedule.domain.TeamCalendar;
+import kr.teammanagers.calendar.domain.TeamCalendar;
 import lombok.*;
 
 import java.time.LocalDate;
