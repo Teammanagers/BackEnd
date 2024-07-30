@@ -28,7 +28,7 @@ public class MemberController {
     }
 
     @PatchMapping(value = "/member", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiPayload<?> updateProfile(
+    public ApiPayload<Void> updateProfile(
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @RequestPart(name = "updateProfile") final UpdateProfile updateProfile,
             @RequestPart(name = "imageFile", required = false) final MultipartFile imageFile
@@ -38,7 +38,7 @@ public class MemberController {
     }
 
     @PatchMapping( "/comment/{commentId}/state")
-    public ApiPayload<?> updateCommentState(
+    public ApiPayload<Void> updateCommentState(
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @PathVariable(name = "commentId") final Long commentId
     ) {
@@ -64,7 +64,7 @@ public class MemberController {
     }
 
     @GetMapping("/member/team")
-    public ApiPayload<GetMemberTeam> getMemberTeam(
+    public ApiPayload<GetMemberTeam> getTeam(
 //            @AuthenticationPrincipal AuthDto auth,                                // TODO : 인증 객체 구현 필요
     ) {
         GetMemberTeam result = memberService.getMemberTeam(1L);                     // TODO : 인증 객체 구현시 auth.id로 변경 필요

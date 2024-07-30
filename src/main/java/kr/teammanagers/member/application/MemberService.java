@@ -37,9 +37,10 @@ public class MemberService {
     private final CommentRepository commentRepository;
     private final TeamDataRepository teamDataRepository;
     private final TeamManageRepository teamManageRepository;
-    private final TagModuleService tagModuleService;
     private final ConfidentRoleRepository confidentRoleRepository;
     private final TeamRepository teamRepository;
+
+    private final TagModuleService tagModuleService;
     private final AmazonConfig amazonConfig;
     private final AmazonS3Provider amazonS3Provider;
 
@@ -47,7 +48,7 @@ public class MemberService {
         Member member = memberRepository.findById(authId).orElseThrow(RuntimeException::new);       // TODO : 예외 처리 필요
         List<Tag> tagList = tagModuleService.getAllConfidentRole(authId);
         List<Comment> commentList = commentRepository.findAllByMemberId(authId);
-        return GetProfile.from(member, tagList, commentList);
+        return GetProfile.of(member, tagList, commentList);
     }
 
     @Transactional

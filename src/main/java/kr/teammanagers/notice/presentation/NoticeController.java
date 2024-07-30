@@ -15,7 +15,7 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     @PostMapping("/team/{teamId}/notice")
-    public ApiPayload<Void> createNotice(
+    public ApiPayload<Void> create(
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @PathVariable("teamId") final Long teamId,
             @RequestBody final CreateNotice createNotice
@@ -25,7 +25,7 @@ public class NoticeController {
     }
 
     @GetMapping("/team/{teamId}/notice")
-    public ApiPayload<GetNoticeList> getNotice(
+    public ApiPayload<GetNoticeList> get(
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @PathVariable("teamId") final Long teamId
     ) {
