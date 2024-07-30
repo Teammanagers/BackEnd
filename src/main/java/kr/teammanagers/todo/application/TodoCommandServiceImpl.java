@@ -1,8 +1,7 @@
 package kr.teammanagers.todo.application;
 
-import kr.teammanagers.common.Status;
-import kr.teammanagers.global.exception.GeneralException;
 import kr.teammanagers.common.payload.code.status.ErrorStatus;
+import kr.teammanagers.global.exception.GeneralException;
 import kr.teammanagers.team.repository.TeamManageRepository;
 import kr.teammanagers.todo.domain.Todo;
 import kr.teammanagers.todo.dto.request.CreateTodo;
@@ -22,7 +21,7 @@ public class TodoCommandServiceImpl implements TodoCommandService {
 
     @Override
     public void createTodo(CreateTodo request, Long teamManageId) {
-        Todo newTodo = CreateTodo.from(request);
+        Todo newTodo = request.toTodo();
 
         newTodo.setTeamManage(teamManageRepository.findById(teamManageId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TEAM_MANAGE_NOT_FOUND)));

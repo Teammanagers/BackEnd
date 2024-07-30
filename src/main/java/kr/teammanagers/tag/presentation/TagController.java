@@ -16,7 +16,7 @@ public class TagController {
     private final TagService tagService;
 
     @PatchMapping("/team/{teamId}/tag/{tagId}")
-    public ApiPayload<?> updateTeamTag(
+    public ApiPayload<Void> updateTeamTag(
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @PathVariable("teamId") final Long teamId,
             @PathVariable("tagId") final Long tagId,
@@ -27,7 +27,7 @@ public class TagController {
     }
 
     @DeleteMapping("/team/{teamId}/tag/{tagId}")
-    public ApiPayload<?> deleteTeamTag(
+    public ApiPayload<Void> deleteTeamTag(
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @PathVariable("teamId") final Long teamId,
             @PathVariable("tagId") final Long tagId
@@ -37,7 +37,7 @@ public class TagController {
     }
 
     @PostMapping("/management/{teamManageId}/role")
-    public ApiPayload<?> createRoleTag(
+    public ApiPayload<Void> createRoleTag(
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @PathVariable("teamManageId") final Long teamManageId,
             @RequestBody final CreateRoleTag createRoleTag
@@ -47,7 +47,7 @@ public class TagController {
     }
 
     @PatchMapping("/management/{teamManageId}/role/{tagId}")
-    public ApiPayload<?> updateRoleTag(
+    public ApiPayload<Void> updateRoleTag(
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @PathVariable("teamManageId") final Long teamManageId,
             @PathVariable("tagId") final Long tagId,
@@ -58,7 +58,7 @@ public class TagController {
     }
 
     @DeleteMapping("/management/{teamManageId}/role/{tagId}")
-    public ApiPayload<?> deleteRoleTag(
+    public ApiPayload<Void> deleteRoleTag(
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @PathVariable("teamManageId") final Long teamManageId,
             @PathVariable("tagId") final Long tagId
