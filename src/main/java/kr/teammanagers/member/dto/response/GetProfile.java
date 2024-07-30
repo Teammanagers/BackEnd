@@ -18,7 +18,7 @@ public record GetProfile(
         List<CommentDto> commentList
 ) {
 
-    public static GetProfile from(final Member member, final List<Tag> tagList, final List<Comment> commentList) {
+    public static GetProfile of(final Member member, final List<Tag> tagList, final List<Comment> commentList) {
         return GetProfile.builder()
                 .imageUrl(member.getImageUrl())
                 .name(member.getName())

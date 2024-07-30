@@ -6,9 +6,9 @@ import kr.teammanagers.todo.domain.Todo;
 public record CreateTodo(
         String title
 ) {
-    public static Todo from(CreateTodo createTodo) {
+    public Todo toTodo() {
         return Todo.builder()
-                .title(createTodo.title())
+                .title(title)
                 .status(Status.PROCEEDING)
                 .build();
     }

@@ -8,13 +8,10 @@ public record TagDto(
         Long tagId,
         String name
 ) {
-
     public static TagDto from(final Tag tag) {
         return TagDto.builder()
                 .tagId(tag.getId())
                 .name(tag.getName())
                 .build();
     }
-
-
 }
