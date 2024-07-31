@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -23,19 +25,18 @@ public class CalendarCommandServiceImpl implements CalendarCommandService {
     private final TeamManageRepository teamManageRepository;
 
     @Override
-    public void createCalendar(final CreateCalendar request, final Long memberId, final Long teamId) {
+    public void createCalendar(final CreateCalendar request, final Long teamId) {
         Calendar newCalendar = request.toCalendar();
-        TeamCalendar newTeamCalendar = TeamCalendar.builder()
-                .isAlarmed(false)
-                .build();
-
-        TeamManage teamManage = teamManageRepository.findByTeamIdAndMemberId(memberId, teamId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.TEAM_MANAGE_NOT_FOUND));
-
-        newTeamCalendar.setCalendar(newCalendar);
-        newTeamCalendar.setTeamManage(teamManage);
-
         calendarRepository.save(newCalendar);
-        teamCalendarRepository.save(newTeamCalendar);
+
+        request.participants().stream()
+                .map(memberId -> { return teamManageRepository.findByMemberIdAndTeamId(memberId, teamId)
+                        .orElseThrow(() -> new GeneralException(ErrorStatus.TEAM_NOT_FOUND)); })
+                .forEach(teamManage -> {
+                    TeamCalendar newTeamCalendar = TeamCalendar.builder().isAlarmed(false).build();
+                    newTeamCalendar.setCalendar(newCalendar);
+                    newTeamCalendar.setTeamManage(teamManage);
+                    teamCalendarRepository.save(newTeamCalendar);
+                });
     }
 }

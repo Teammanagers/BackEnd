@@ -9,7 +9,7 @@ import java.util.List;
 public record CreateCalendar(
         LocalDateTime date,
         String title,
-        List<String> participants,
+        List<Long> participants,
         String content
 ) {
     public Calendar toCalendar() {
