@@ -4,6 +4,7 @@ import kr.teammanagers.notice.domain.Notice;
 import kr.teammanagers.notice.dto.NoticeDto;
 import kr.teammanagers.notice.dto.request.CreateNotice;
 import kr.teammanagers.notice.dto.response.GetNoticeList;
+import kr.teammanagers.notice.dto.response.GetNoticeRecent;
 import kr.teammanagers.notice.repository.NoticeRepository;
 import kr.teammanagers.team.domain.Team;
 import kr.teammanagers.team.repository.TeamRepository;
@@ -35,5 +36,12 @@ public class NoticeService {
                 .map(NoticeDto::from)
                 .toList();
         return GetNoticeList.from(noticeDtoList);
+    }
+
+    public GetNoticeRecent getNoticeRecent(final Long teamId) {
+        return noticeRepository.findFirstByTeamId(teamId)
+                .map(NoticeDto::from)
+                .map(GetNoticeRecent::from)
+                .orElse(null);
     }
 }
