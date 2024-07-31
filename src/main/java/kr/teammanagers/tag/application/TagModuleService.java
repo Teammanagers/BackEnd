@@ -1,10 +1,8 @@
 package kr.teammanagers.tag.application;
 
 import kr.teammanagers.member.domain.Member;
-import kr.teammanagers.tag.domain.ConfidentRole;
-import kr.teammanagers.tag.domain.Tag;
-import kr.teammanagers.tag.domain.TagTeam;
-import kr.teammanagers.tag.domain.TeamRole;
+import kr.teammanagers.memo.domain.Memo;
+import kr.teammanagers.tag.domain.*;
 import kr.teammanagers.tag.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -50,6 +48,15 @@ public class TagModuleService {
         );
     }
 
+    public void saveTagMemo(final Tag tag, final Memo memo) {
+        tagMemoRepository.save(
+                TagMemo.builder()
+                        .tag(tag)
+                        .memo(memo)
+                        .build()
+        );
+    }
+
     public Tag findOrCreateTag(final String tagName) {
         return tagRepository.findByName(tagName).orElseGet(() ->
                 tagRepository.save(
@@ -82,12 +89,31 @@ public class TagModuleService {
                 });
     }
 
+    public void addNewTagMemo(final List<String> requestedTagMemo, final List<String> currentTagMemoNames, final Memo memo) {
+        requestedTagMemo.stream()
+                .filter(role -> !currentTagMemoNames.contains(role))
+                .forEach(tagName -> {
+                    Tag tag = findOrCreateTag(tagName);
+                    saveTagMemo(tag, memo);
+                });
+    }
+
     public void removeOldConfidentRoles(final List<String> requestedRoles, final List<ConfidentRole> currentRoles) {
         currentRoles.stream()
                 .filter(role -> !requestedRoles.contains(role.getTag().getName()))
                 .forEach(confidentRole -> {
                     Long tagId = confidentRole.getTag().getId();
                     confidentRoleRepository.delete(confidentRole);
+                    validateAndDeleteTagByTagId(tagId);
+                });
+    }
+
+    public void removeOldTagMemo(final List<String> requestedTagMemo, final List<TagMemo> currentTagMemoNames) {
+        currentTagMemoNames.stream()
+                .filter(role -> !requestedTagMemo.contains(role.getTag().getName()))
+                .forEach(tagMemo -> {
+                    Long tagId = tagMemo.getTag().getId();
+                    tagMemoRepository.delete(tagMemo);
                     validateAndDeleteTagByTagId(tagId);
                 });
     }
