@@ -18,6 +18,6 @@ public record CreateCalendar(
                 .title(this.title)
                 .content(this.content)
                 .status(Status.PROCEEDING)
-                .build();   //Todo: Calendar에 participants 추가 필요
+                .build();
     }
 }
