@@ -4,7 +4,7 @@ import java.util.List;
 
 public record UpdateCalendar(
         String title,
-        List<String> participants,
+        List<Long> participants,
         String content
 ) {
 }

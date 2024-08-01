@@ -45,4 +45,12 @@ public class Calendar extends AuditingField {
         this.date = date;
         this.status = status;
     }
+
+    public void updateTitle(final String title) {
+        this.title = title;
+    }
+
+    public void updateContent(final String content) {
+        this.content = content;
+    }
 }

@@ -3,6 +3,7 @@ package kr.teammanagers.calendar.presentation;
 import kr.teammanagers.calendar.application.CalendarCommandService;
 import kr.teammanagers.calendar.application.CalendarQueryService;
 import kr.teammanagers.calendar.dto.request.CreateCalendar;
+import kr.teammanagers.calendar.dto.request.UpdateCalendar;
 import kr.teammanagers.calendar.dto.response.GetCalendar;
 import kr.teammanagers.calendar.dto.response.GetSimpleCalendarList;
 import kr.teammanagers.common.payload.code.ApiPayload;
@@ -41,6 +42,15 @@ public class CalendarRestController {
         GetCalendar getCalendar = calendarQueryService.getCalendarDetail(calendarId);
 
         return ApiPayload.onSuccess(getCalendar);
+    }
+
+    @PatchMapping("/calendar/{calendarId}")
+    public ApiPayload<Void> updateCalendar(@RequestBody final UpdateCalendar request,
+                                           @PathVariable(name = "calendarId") final Long calendarId) {
+
+        calendarCommandService.update(request, calendarId);
+
+        return ApiPayload.onSuccess();
     }
 
 }
