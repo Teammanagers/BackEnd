@@ -25,12 +25,8 @@ public class CalendarQueryServiceImpl implements CalendarQueryService {
     private final TeamManageRepository teamManageRepository;
 
     @Override
-    public GetSimpleCalendarList getSimpleCalendarList(Long memberId, Long teamId, Integer month) {
-
-        List<CalendarDto> teamCalendarList = teamManageRepository.findAllByTeamId(teamId).stream()
-                .flatMap(teamManage -> { return teamCalendarRepository.findAllByTeamManage(teamManage).stream(); })
-                .map(TeamCalendar::getCalendar)
-                .distinct()
+    public GetSimpleCalendarList getCalendarListOfMonth(Long memberId, Long teamId, Integer month) {
+        List<CalendarDto> teamCalendarList = calendarRepository.findAllByTeamId(teamId).stream()
                 .filter(calendar -> calendar.getDate().getMonthValue() == month)
                 .map(calendar -> { return CalendarDto.of(calendar, null); })
                 .toList();
