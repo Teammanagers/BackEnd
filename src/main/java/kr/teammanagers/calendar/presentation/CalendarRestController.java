@@ -61,4 +61,12 @@ public class CalendarRestController {
         return ApiPayload.onSuccess();
     }
 
+    @DeleteMapping("/calendar/{calendarId}")
+    public ApiPayload<Void> deleteCalendar(@PathVariable(name = "calendarId") final Long calendarId) {
+
+        calendarCommandService.delete(calendarId);
+
+        return ApiPayload.onSuccess();
+    }
+
 }

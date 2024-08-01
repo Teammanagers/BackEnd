@@ -90,5 +90,14 @@ public class CalendarCommandServiceImpl implements CalendarCommandService {
         calendar.switchStatus();
     }
 
+    @Override
+    public void delete(Long calendarId) {
+        Calendar calendar = calendarRepository.findById(calendarId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CALENDAR_NOT_FOUND));
+
+        teamCalendarRepository.deleteAll(teamCalendarRepository.findAllByCalendarId(calendarId));
+        calendarRepository.delete(calendar);
+    }
+
 
 }

@@ -7,4 +7,5 @@ public interface CalendarCommandService {
     void createCalendar(CreateCalendar request, Long teamId);
     void update(UpdateCalendar request, Long calendarId);
     void updateState(Long calendarId);
+    void delete(Long calendarId);
 }
