@@ -16,9 +16,12 @@ import kr.teammanagers.storage.repository.TeamDataRepository;
 import kr.teammanagers.tag.application.TagModuleService;
 import kr.teammanagers.tag.domain.ConfidentRole;
 import kr.teammanagers.tag.domain.Tag;
+import kr.teammanagers.tag.domain.TagTeam;
 import kr.teammanagers.tag.repository.ConfidentRoleRepository;
+import kr.teammanagers.tag.repository.TagTeamRepository;
 import kr.teammanagers.team.domain.Team;
 import kr.teammanagers.team.domain.TeamManage;
+import kr.teammanagers.team.dto.TeamDto;
 import kr.teammanagers.team.repository.TeamManageRepository;
 import kr.teammanagers.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +46,7 @@ public class MemberService {
     private final TagModuleService tagModuleService;
     private final AmazonConfig amazonConfig;
     private final AmazonS3Provider amazonS3Provider;
+    private final TagTeamRepository tagTeamRepository;
 
     public GetProfile getProfile(final Long authId) {
         Member member = memberRepository.findById(authId).orElseThrow(RuntimeException::new);       // TODO : 예외 처리 필요
@@ -99,8 +103,13 @@ public class MemberService {
 
     public GetMemberTeam getMemberTeam(final Long authId) {
         Member member = memberRepository.findById(authId).orElseThrow(RuntimeException::new);       // TODO : 예외 처리 필요
-        List<Team> teamList = teamManageRepository.findAllByMemberId(authId).stream()
+        List<TeamDto> teamList = teamManageRepository.findAllByMemberId(authId).stream()
                 .map(TeamManage::getTeam)
+                .map(team -> {
+                    List<Tag> tagList = tagTeamRepository.findAllByTeamId(team.getId()).stream()
+                            .map(TagTeam::getTag).toList();
+                    return TeamDto.from(team, tagList);
+                })
                 .toList();
         return GetMemberTeam.of(member, teamList);
     }

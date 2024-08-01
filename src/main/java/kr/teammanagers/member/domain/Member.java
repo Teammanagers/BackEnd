@@ -37,14 +37,18 @@ public class Member extends AuditingField {
     @Column(length = 20)
     private String belong;
 
+    @Column(unique = true, nullable = false, length = 64)
+    private String providerId;
+
     @Builder
-    private Member(final String name, final LocalDate birth, final String email, final String imageUrl, final String phoneNumber, final String belong) {
+    private Member(final String name, final LocalDate birth, final String email, final String imageUrl, final String phoneNumber, final String belong, final String providerId) {
         this.name = name;
         this.birth = birth;
         this.email = email;
         this.imageUrl = imageUrl;
         this.phoneNumber = phoneNumber;
         this.belong = belong;
+        this.providerId = providerId;
     }
 
     public void updateBelong(final String belong) {

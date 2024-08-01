@@ -4,6 +4,7 @@ import kr.teammanagers.common.payload.code.ApiPayload;
 import kr.teammanagers.notice.application.NoticeService;
 import kr.teammanagers.notice.dto.request.CreateNotice;
 import kr.teammanagers.notice.dto.response.GetNoticeList;
+import kr.teammanagers.notice.dto.response.GetNoticeRecent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,15 @@ public class NoticeController {
             @PathVariable("teamId") final Long teamId
     ) {
         GetNoticeList result = noticeService.getNoticeList(teamId);
+        return ApiPayload.onSuccess(result);
+    }
+
+    @GetMapping("/team/{teamId}/notice/recent")
+    public ApiPayload<GetNoticeRecent> getRecent(
+//            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
+            @PathVariable("teamId") final Long teamId
+    ) {
+        GetNoticeRecent result = noticeService.getNoticeRecent(teamId);
         return ApiPayload.onSuccess(result);
     }
 }
