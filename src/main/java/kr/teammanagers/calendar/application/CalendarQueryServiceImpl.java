@@ -5,6 +5,7 @@ import kr.teammanagers.calendar.domain.TeamCalendar;
 import kr.teammanagers.calendar.dto.CalendarDetailDto;
 import kr.teammanagers.calendar.dto.CalendarDto;
 import kr.teammanagers.calendar.dto.response.GetCalendar;
+import kr.teammanagers.calendar.dto.response.GetComingCalendarList;
 import kr.teammanagers.calendar.dto.response.GetSimpleCalendarList;
 import kr.teammanagers.calendar.repository.CalendarRepository;
 import kr.teammanagers.calendar.repository.TeamCalendarRepository;
@@ -16,6 +17,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +40,23 @@ public class CalendarQueryServiceImpl implements CalendarQueryService {
                 .toList();
 
         return GetSimpleCalendarList.from(teamCalendarList);
+    }
+
+    @Override
+    public GetComingCalendarList getComingCalendarList(Long memberId, Long teamId) {
+
+        TeamManage teamManage = teamManageRepository.findByMemberIdAndTeamId(memberId, teamId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TEAM_MANAGE_NOT_FOUND));
+
+        List<CalendarDto> comingCalendarList = teamCalendarRepository.findAllByTeamManageId(teamManage.getId())
+                .stream()
+                .filter(teamCalendar -> teamCalendar.getCalendar().getDate().isAfter(LocalDateTime.now()))
+                .sorted(Comparator.comparing(teamCalendar -> Duration.between(LocalDateTime.now(), teamCalendar.getCalendar().getDate()).toSeconds()))
+                .limit(5)
+                .map(teamCalendar -> { return CalendarDto.of(teamCalendar.getCalendar(), teamCalendar.getIsAlarmed()); })
+                .toList();
+
+        return GetComingCalendarList.from(comingCalendarList);
     }
 
     @Override

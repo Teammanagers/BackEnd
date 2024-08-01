@@ -5,6 +5,7 @@ import kr.teammanagers.calendar.application.CalendarQueryService;
 import kr.teammanagers.calendar.dto.request.CreateCalendar;
 import kr.teammanagers.calendar.dto.request.UpdateCalendar;
 import kr.teammanagers.calendar.dto.response.GetCalendar;
+import kr.teammanagers.calendar.dto.response.GetComingCalendarList;
 import kr.teammanagers.calendar.dto.response.GetSimpleCalendarList;
 import kr.teammanagers.common.payload.code.ApiPayload;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,14 @@ public class CalendarRestController {
         GetSimpleCalendarList getSimpleCalendarList = calendarQueryService.getCalendarListOfMonth(1L, teamId, month);
 
         return ApiPayload.onSuccess(getSimpleCalendarList);
+    }
+
+    @GetMapping("team/{teamId}/calendar/coming")
+    public ApiPayload<GetComingCalendarList> getComingCalendarList(@PathVariable(name = "teamId") final Long teamId) {
+
+        GetComingCalendarList getComingCalendarList = calendarQueryService.getComingCalendarList(1L, teamId);
+
+        return ApiPayload.onSuccess(getComingCalendarList);
     }
 
     @GetMapping("/calendar/{calendarId}")

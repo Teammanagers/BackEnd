@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface TeamCalendarRepository extends JpaRepository<TeamCalendar, Long>, TeamCalendarQueryDsl {
     List<TeamCalendar> findAllByCalendarId(Long calendarId);
     Optional<TeamCalendar> findByCalendarIdAndTeamManageId(Long calendarId, Long teamManageId);
+    List<TeamCalendar> findAllByTeamManageId(Long teamManageId);
 }
