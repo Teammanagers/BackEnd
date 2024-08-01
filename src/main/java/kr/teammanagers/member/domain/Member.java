@@ -37,7 +37,7 @@ public class Member extends AuditingField {
     @Column(length = 20)
     private String belong;
 
-    @Column(unique = true,length = 64)
+    @Column(unique = true, nullable = false, length = 64)
     private String providerId;
 
     @Builder
