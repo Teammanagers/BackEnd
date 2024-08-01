@@ -53,4 +53,9 @@ public class Calendar extends AuditingField {
     public void updateContent(final String content) {
         this.content = content;
     }
+
+    public void switchStatus() {
+        if (this.status == Status.PROCEEDING) this.status = Status.COMPLETED;
+        else this.status = Status.PROCEEDING;
+    }
 }

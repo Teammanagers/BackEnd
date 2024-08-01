@@ -82,4 +82,13 @@ public class CalendarCommandServiceImpl implements CalendarCommandService {
                     teamCalendarRepository.save(newTeamCalendar);
                 });
     }
+
+    @Override
+    public void updateState(Long calendarId) {
+        Calendar calendar = calendarRepository.findById(calendarId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CALENDAR_NOT_FOUND));
+        calendar.switchStatus();
+    }
+
+
 }

@@ -53,4 +53,12 @@ public class CalendarRestController {
         return ApiPayload.onSuccess();
     }
 
+    @PatchMapping("/calendar/{calendarId}/state")
+    public ApiPayload<Void> updateCalendarState(@PathVariable(name = "calendarId") final Long calendarId) {
+
+        calendarCommandService.updateState(calendarId);
+
+        return ApiPayload.onSuccess();
+    }
+
 }
