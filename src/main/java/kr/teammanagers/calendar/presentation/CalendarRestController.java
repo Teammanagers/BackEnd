@@ -3,6 +3,7 @@ package kr.teammanagers.calendar.presentation;
 import kr.teammanagers.calendar.application.CalendarCommandService;
 import kr.teammanagers.calendar.application.CalendarQueryService;
 import kr.teammanagers.calendar.dto.request.CreateCalendar;
+import kr.teammanagers.calendar.dto.response.GetCalendar;
 import kr.teammanagers.calendar.dto.response.GetSimpleCalendarList;
 import kr.teammanagers.common.payload.code.ApiPayload;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +27,20 @@ public class CalendarRestController {
     }
 
     @GetMapping("/team/{teamId}/calendar")
-    public ApiPayload<GetSimpleCalendarList> get(@PathVariable(name = "teamId") final Long teamId,
-                                                 @RequestParam(name = "month") final Integer month) {
+    public ApiPayload<GetSimpleCalendarList> getSimpleCalendarList(@PathVariable(name = "teamId") final Long teamId,
+                                                                   @RequestParam(name = "month") final Integer month) {
 
-        GetSimpleCalendarList getSimpleCalendarList = calendarQueryService.getSimpleCalendarList(1L, teamId, month);
+        GetSimpleCalendarList getSimpleCalendarList = calendarQueryService.getCalendarListOfMonth(1L, teamId, month);
 
         return ApiPayload.onSuccess(getSimpleCalendarList);
+    }
+
+    @GetMapping("/calendar/{calendarId}")
+    public ApiPayload<GetCalendar> getCalendar(@PathVariable(name = "calendarId") final Long calendarId) {
+
+        GetCalendar getCalendar = calendarQueryService.getCalendarDetail(calendarId);
+
+        return ApiPayload.onSuccess(getCalendar);
     }
 
 }
