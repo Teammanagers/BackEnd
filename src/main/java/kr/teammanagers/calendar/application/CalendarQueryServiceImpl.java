@@ -30,8 +30,7 @@ public class CalendarQueryServiceImpl implements CalendarQueryService {
         List<CalendarDto> teamCalendarList = teamManageRepository.findAllByTeamId(teamId).stream()
                 .flatMap(teamManage -> { return teamCalendarRepository.findAllByTeamManage(teamManage).stream(); })
                 .map(TeamCalendar::getCalendar)
-                .collect(Collectors.toSet())
-                .stream()
+                .distinct()
                 .filter(calendar -> calendar.getDate().getMonthValue() == month)
                 .map(calendar -> { return CalendarDto.of(calendar, null); })
                 .toList();
