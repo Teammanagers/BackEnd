@@ -29,11 +29,13 @@ public class CalendarCommandServiceImpl implements CalendarCommandService {
         Calendar newCalendar = request.toCalendar();
         calendarRepository.save(newCalendar);
 
-        request.participants().stream()
-                .map(memberId -> { return teamManageRepository.findByMemberIdAndTeamId(memberId, teamId)
-                        .orElseThrow(() -> new GeneralException(ErrorStatus.TEAM_NOT_FOUND)); })
-                .forEach(teamManage -> {
-                    TeamCalendar newTeamCalendar = TeamCalendar.builder().isAlarmed(false).build();
+        request.participants()
+                .forEach(teamManageId -> {
+                    TeamManage teamManage = teamManageRepository.findById(teamManageId)
+                            .orElseThrow(() -> new GeneralException(ErrorStatus.TEAM_MANAGE_NOT_FOUND));
+                    TeamCalendar newTeamCalendar = TeamCalendar.builder()
+                            .isAlarmed(false)
+                            .build();
                     newTeamCalendar.setCalendar(newCalendar);
                     newTeamCalendar.setTeamManage(teamManage);
                     teamCalendarRepository.save(newTeamCalendar);
