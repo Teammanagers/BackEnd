@@ -3,12 +3,12 @@ package kr.teammanagers.calendar.domain;
 import jakarta.persistence.*;
 import kr.teammanagers.common.AuditingField;
 import kr.teammanagers.common.Status;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import kr.teammanagers.team.domain.Team;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "calendar")
@@ -31,6 +31,12 @@ public class Calendar extends AuditingField {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    //Mapping
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     @Builder
     private Calendar(final String title, final String content, final LocalDateTime date, final Status status) {

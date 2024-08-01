@@ -7,8 +7,10 @@ import kr.teammanagers.calendar.repository.CalendarRepository;
 import kr.teammanagers.calendar.repository.TeamCalendarRepository;
 import kr.teammanagers.common.payload.code.status.ErrorStatus;
 import kr.teammanagers.global.exception.GeneralException;
+import kr.teammanagers.team.domain.Team;
 import kr.teammanagers.team.domain.TeamManage;
 import kr.teammanagers.team.repository.TeamManageRepository;
+import kr.teammanagers.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +25,15 @@ public class CalendarCommandServiceImpl implements CalendarCommandService {
     private final CalendarRepository calendarRepository;
     private final TeamCalendarRepository teamCalendarRepository;
     private final TeamManageRepository teamManageRepository;
+    private final TeamRepository teamRepository;
 
     @Override
     public void createCalendar(final CreateCalendar request, final Long teamId) {
+
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TEAM_NOT_FOUND));
         Calendar newCalendar = request.toCalendar();
+        newCalendar.setTeam(team);
         calendarRepository.save(newCalendar);
 
         request.participants()
