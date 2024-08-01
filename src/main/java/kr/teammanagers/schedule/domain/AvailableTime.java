@@ -1,4 +1,4 @@
-package kr.teammanagers.calendar.domain;
+package kr.teammanagers.schedule.domain;
 
 import jakarta.persistence.*;
 import kr.teammanagers.common.AuditingField;

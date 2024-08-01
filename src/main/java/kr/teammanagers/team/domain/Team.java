@@ -24,18 +24,34 @@ public class Team extends AuditingField {
     @Column(name = "team_image_url")
     private String teamImageUrl;
 
-    @Column(name = "team_code", nullable = false, length = 8)
+    @Column(name = "team_code", length = 8)
     private String teamCode;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Column(nullable = false)
+    private String password;
+
     @Builder
-    private Team(final String title, final String teamImageUrl, final String teamCode, final Status status) {
+    private Team(final String title, final String teamImageUrl, final String teamCode, final Status status, final String password) {
         this.title = title;
         this.teamImageUrl = teamImageUrl;
         this.teamCode = teamCode;
+        this.status = status;
+        this.password = password;
+    }
+
+    public void updateTeamCode(final String teamCode) {
+        this.teamCode = teamCode;
+    }
+
+    public void updatePassword(final String password) {
+        this.password = password;
+    }
+
+    public void updateStatus(final Status status) {
         this.status = status;
     }
 }
