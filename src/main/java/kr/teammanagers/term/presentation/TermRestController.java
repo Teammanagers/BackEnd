@@ -19,7 +19,7 @@ public class TermRestController {
     @PostMapping("/terms")
     public ApiPayload<Void> create(@RequestBody final CreateTerms request) {
 
-        termCommandService.createTerms(request);
+        termCommandService.createTerms(request);    //Todo: memberId 파라미터 추가
         return ApiPayload.onSuccess();
     }
 }

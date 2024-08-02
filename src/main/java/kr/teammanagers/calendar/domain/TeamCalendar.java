@@ -22,7 +22,7 @@ public class TeamCalendar extends AuditingField {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "calendar_id")
-    private Calendar schedule;
+    private Calendar calendar;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
