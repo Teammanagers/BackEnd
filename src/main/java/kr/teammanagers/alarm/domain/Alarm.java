@@ -3,6 +3,7 @@ package kr.teammanagers.alarm.domain;
 import jakarta.persistence.*;
 import kr.teammanagers.common.AuditingField;
 import kr.teammanagers.calendar.domain.TeamCalendar;
+import kr.teammanagers.todo.domain.Todo;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -26,11 +27,16 @@ public class Alarm extends AuditingField {
     @Column(nullable = false)
     private LocalDate date;
 
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "todo_id")
+    private Todo todo;
+
     // Mapping
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_schedule_id")
-    private TeamCalendar teamSchedule;
+    @JoinColumn(name = "team_calendar_id")
+    private TeamCalendar teamCalendar;
 
     @Builder
     private Alarm(final String title, final String content, final LocalDate date) {
