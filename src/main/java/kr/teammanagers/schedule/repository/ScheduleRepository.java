@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     Optional<Schedule> findByTeamManageId(Long teamManageId);
+    void deleteByTeamManageId(Long teamManageId);
 }

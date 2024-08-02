@@ -49,4 +49,12 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService{
                 request.sunday()
         );
     }
+
+    @Override
+    public void delete(Long memberId, Long teamId) {
+        TeamManage teamManage = teamManageRepository.findByMemberIdAndTeamId(memberId, teamId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TEAM_MANAGE_NOT_FOUND));
+
+        scheduleRepository.deleteByTeamManageId(teamManage.getId());
+    }
 }

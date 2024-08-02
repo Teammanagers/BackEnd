@@ -33,4 +33,12 @@ public class ScheduleRestController {
 
         return ApiPayload.onSuccess();
     }
+
+    @DeleteMapping("/team/{teamId}/schedule")
+    public ApiPayload<Void> deleteSchedule(@PathVariable final Long teamId) {
+
+        scheduleCommandService.delete(1L, teamId);
+
+        return ApiPayload.onSuccess();
+    }
 }
