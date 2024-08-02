@@ -73,4 +73,14 @@ public class Schedule extends AuditingField {
         this.saturday = saturday;
         this.sunday = sunday;
     }
+
+    public void update(final TimeTable monday, final TimeTable tuesday, final TimeTable wednesday, final TimeTable thursday, final TimeTable friday, final TimeTable saturday, final TimeTable sunday) {
+        this.monday = monday;
+        this.tuesday = tuesday;
+        this.wednesday = wednesday;
+        this.thursday = thursday;
+        this.friday = friday;
+        this.saturday = saturday;
+        this.sunday = sunday;
+    }
 }

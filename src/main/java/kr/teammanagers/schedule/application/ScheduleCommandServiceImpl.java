@@ -4,6 +4,7 @@ import kr.teammanagers.common.payload.code.status.ErrorStatus;
 import kr.teammanagers.global.exception.GeneralException;
 import kr.teammanagers.schedule.domain.Schedule;
 import kr.teammanagers.schedule.dto.request.CreateSchedule;
+import kr.teammanagers.schedule.dto.request.UpdateSchedule;
 import kr.teammanagers.schedule.repository.ScheduleRepository;
 import kr.teammanagers.team.domain.TeamManage;
 import kr.teammanagers.team.repository.TeamManageRepository;
@@ -28,5 +29,24 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService{
         newSchedule.setTeamManage(teamManage);
 
         scheduleRepository.save(newSchedule);
+    }
+
+    @Override
+    public void update(Long memberId, Long teamId, UpdateSchedule request) {
+        TeamManage teamManage = teamManageRepository.findByMemberIdAndTeamId(memberId, teamId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TEAM_MANAGE_NOT_FOUND));
+
+        Schedule scheduleForUpdate = scheduleRepository.findByTeamManageId(teamManage.getId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.SCHEDULE_NOT_FOUND));
+
+        scheduleForUpdate.update(
+                request.monday(),
+                request.tuesday(),
+                request.wednesday(),
+                request.thursday(),
+                request.friday(),
+                request.saturday(),
+                request.sunday()
+        );
     }
 }

@@ -4,6 +4,7 @@ import kr.teammanagers.common.payload.code.ApiPayload;
 import kr.teammanagers.schedule.application.ScheduleCommandService;
 import kr.teammanagers.schedule.application.ScheduleQueryService;
 import kr.teammanagers.schedule.dto.request.CreateSchedule;
+import kr.teammanagers.schedule.dto.request.UpdateSchedule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,15 @@ public class ScheduleRestController {
                                            @PathVariable final Long teamId) {
 
         scheduleCommandService.create(1L, teamId, request);
+
+        return ApiPayload.onSuccess();
+    }
+
+    @PatchMapping("/team/{teamId}/schedule")
+    public ApiPayload<Void> updateSchedule(@RequestBody final UpdateSchedule request,
+                                           @PathVariable final Long teamId) {
+
+        scheduleCommandService.update(1L, teamId, request);
 
         return ApiPayload.onSuccess();
     }
