@@ -18,7 +18,7 @@ public class ScheduleRestController {
 
     @PostMapping("/team/{teamId}/schedule")
     public ApiPayload<Void> createSchedule(@RequestBody final CreateSchedule request,
-                                           @PathVariable final Long teamId) {
+                                           @PathVariable(name = "teamId") final Long teamId) {
 
         scheduleCommandService.create(1L, teamId, request);
 
@@ -27,7 +27,7 @@ public class ScheduleRestController {
 
     @PatchMapping("/team/{teamId}/schedule")
     public ApiPayload<Void> updateSchedule(@RequestBody final UpdateSchedule request,
-                                           @PathVariable final Long teamId) {
+                                           @PathVariable(name = "teamId") final Long teamId) {
 
         scheduleCommandService.update(1L, teamId, request);
 
@@ -35,7 +35,7 @@ public class ScheduleRestController {
     }
 
     @DeleteMapping("/team/{teamId}/schedule")
-    public ApiPayload<Void> deleteSchedule(@PathVariable final Long teamId) {
+    public ApiPayload<Void> deleteSchedule(@PathVariable(name = "teamId") final Long teamId) {
 
         scheduleCommandService.delete(1L, teamId);
 
