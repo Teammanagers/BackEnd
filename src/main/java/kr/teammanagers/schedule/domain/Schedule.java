@@ -6,10 +6,10 @@ import kr.teammanagers.team.domain.TeamManage;
 import lombok.*;
 
 @Entity
-@Table(name = "available_times")
+@Table(name = "schedule")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class AvailableTime extends AuditingField {
+public class Schedule extends AuditingField {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,7 +64,7 @@ public class AvailableTime extends AuditingField {
     private TeamManage teamManage;
 
     @Builder
-    private AvailableTime(final TimeTable monday, final TimeTable tuesday, final TimeTable wednesday, final TimeTable thursday, final TimeTable friday, final TimeTable saturday, final TimeTable sunday) {
+    private Schedule(final TimeTable monday, final TimeTable tuesday, final TimeTable wednesday, final TimeTable thursday, final TimeTable friday, final TimeTable saturday, final TimeTable sunday) {
         this.monday = monday;
         this.tuesday = tuesday;
         this.wednesday = wednesday;
