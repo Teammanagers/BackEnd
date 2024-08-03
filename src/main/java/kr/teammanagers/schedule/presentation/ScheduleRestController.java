@@ -5,6 +5,7 @@ import kr.teammanagers.schedule.application.ScheduleCommandService;
 import kr.teammanagers.schedule.application.ScheduleQueryService;
 import kr.teammanagers.schedule.dto.request.CreateSchedule;
 import kr.teammanagers.schedule.dto.request.UpdateSchedule;
+import kr.teammanagers.schedule.dto.response.GetTeamSchedule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,5 +41,13 @@ public class ScheduleRestController {
         scheduleCommandService.delete(1L, teamId);
 
         return ApiPayload.onSuccess();
+    }
+
+    @GetMapping("team/{teamId}/schedule")
+    public ApiPayload<GetTeamSchedule> getTeamSchedule(@PathVariable(name = "teamId") final Long teamId) {
+
+        GetTeamSchedule getTeamSchedule = scheduleQueryService.getTeamSchedule(teamId);
+
+        return ApiPayload.onSuccess(getTeamSchedule);
     }
 }
