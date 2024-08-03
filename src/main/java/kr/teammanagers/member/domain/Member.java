@@ -19,13 +19,13 @@ public class Member extends AuditingField {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String name;
 
-    @Column(nullable = false)
-    private LocalDate birth;
+    @Column()
+    private String birth;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String email;
 
     @Column(name = "image_url")
@@ -41,7 +41,7 @@ public class Member extends AuditingField {
     private String providerId;
 
     @Builder
-    private Member(final String name, final LocalDate birth, final String email, final String imageUrl, final String phoneNumber, final String belong, final String providerId) {
+    private Member(final String name, final String birth, final String email, final String imageUrl, final String phoneNumber, final String belong, final String providerId) {
         this.name = name;
         this.birth = birth;
         this.email = email;
