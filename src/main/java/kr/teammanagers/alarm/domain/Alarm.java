@@ -2,11 +2,10 @@ package kr.teammanagers.alarm.domain;
 
 import jakarta.persistence.*;
 import kr.teammanagers.common.AuditingField;
-import kr.teammanagers.calendar.domain.TeamCalendar;
-import kr.teammanagers.todo.domain.Todo;
+import kr.teammanagers.team.domain.TeamManage;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "alarm")
@@ -18,30 +17,29 @@ public class Alarm extends AuditingField {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
-    private String title;
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private AlarmType type;
+
+    @Column
+    private Long referenceId;
 
     @Column(nullable = false)
-    private String content;
+    private LocalDateTime date;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private Boolean isRead;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "todo_id")
-    private Todo todo;
-
-    // Mapping
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_calendar_id")
-    private TeamCalendar teamCalendar;
+    @JoinColumn(name = "teamManage_id")
+    private TeamManage teamManage;
 
     @Builder
-    private Alarm(final String title, final String content, final LocalDate date) {
-        this.title = title;
-        this.content = content;
+    private Alarm(final Long referenceId, final AlarmType type, final LocalDateTime date, final Boolean isRead) {
+        this.referenceId = referenceId;
+        this.type = type;
+        this.isRead = isRead;
         this.date = date;
     }
 }
