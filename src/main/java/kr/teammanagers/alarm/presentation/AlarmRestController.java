@@ -33,4 +33,12 @@ public class AlarmRestController {
 
         return ApiPayload.onSuccess(getAlarm);
     }
+
+    @DeleteMapping("/alarm/{alarmId}")
+    public ApiPayload<Void> deleteAlarm(@PathVariable(name = "alarmId") Long alarmId) {
+
+        alarmCommandService.delete(alarmId);
+
+        return ApiPayload.onSuccess();
+    }
 }

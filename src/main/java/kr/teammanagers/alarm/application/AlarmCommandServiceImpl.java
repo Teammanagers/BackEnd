@@ -41,4 +41,11 @@ public class AlarmCommandServiceImpl implements AlarmCommandService {
 
         alarmRepository.save(alarm);
     }
+
+    @Override
+    public void delete(Long alarmId) {
+
+        alarmRepository.deleteById(alarmId);
+
+    }
 }
