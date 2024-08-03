@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
+
                 .headers(c -> c.frameOptions(
                         FrameOptionsConfig::disable).disable())
                 .sessionManagement(c ->
@@ -57,7 +58,8 @@ public class SecurityConfig {
                                         new AntPathRequestMatcher("/funding-products/**", "GET"),
                                         new AntPathRequestMatcher("/notification/subscribe"),
                                         new AntPathRequestMatcher("/login/oauth2/code/**"),
-                                        new AntPathRequestMatcher("/oauth2/**")
+                                        new AntPathRequestMatcher("/oauth2/**"),
+                                        new AntPathRequestMatcher("/health")
 
                                 ).permitAll()
                                 .anyRequest().authenticated()
