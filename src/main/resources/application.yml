@@ -5,6 +5,7 @@ spring:
     import: file:.env[.properties]
   profiles:
     active: default
+    include: oauth
   application:
     name: team-managers
   datasource:
@@ -30,7 +31,9 @@ spring:
         order_inserts: true
         jdbc:
           batch_size: 100
+
     open-in-view: false
+
   sql:
     init:
       platform: mysql
