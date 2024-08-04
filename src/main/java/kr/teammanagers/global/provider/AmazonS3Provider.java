@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import kr.teammanagers.global.config.AmazonConfig;
 import kr.teammanagers.global.constant.AmazonConstant;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -65,5 +67,10 @@ public class AmazonS3Provider {
 
     public String generateKeyName(final String filePath) {
         return filePath + '/' + UUID.randomUUID();
+    }
+
+    public InputStream downloadFile(final String fileUrl) {
+        S3Object s3Object = amazonS3.getObject(amazonConfig.getBucket(), fileUrl);
+        return s3Object.getObjectContent();
     }
 }
