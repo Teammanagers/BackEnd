@@ -46,6 +46,14 @@ public class AlarmCommandServiceImpl implements AlarmCommandService {
     public void delete(Long alarmId) {
 
         alarmRepository.deleteById(alarmId);
+    }
 
+    @Override
+    public void read(Long alarmId) {
+
+        Alarm alarm = alarmRepository.findById(alarmId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.ALARM_NOT_FOUND));
+
+        alarm.read();
     }
 }

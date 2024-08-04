@@ -42,4 +42,8 @@ public class Alarm extends AuditingField {
         this.isRead = isRead;
         this.date = date;
     }
+
+    public void read() {
+        this.isRead = true;
+    }
 }

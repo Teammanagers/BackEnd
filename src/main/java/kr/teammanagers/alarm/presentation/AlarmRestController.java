@@ -41,4 +41,12 @@ public class AlarmRestController {
 
         return ApiPayload.onSuccess();
     }
+
+    @PatchMapping("alarm/{alarmId}")
+    public ApiPayload<Void> readAlarm(@PathVariable(name = "alarmId") Long alarmId) {
+
+        alarmCommandService.read(alarmId);
+
+        return ApiPayload.onSuccess();
+    }
 }
