@@ -15,14 +15,11 @@ import kr.teammanagers.tag.repository.TagTeamRepository;
 import kr.teammanagers.tag.repository.TeamRoleRepository;
 import kr.teammanagers.team.domain.Team;
 import kr.teammanagers.team.domain.TeamManage;
-import kr.teammanagers.team.dto.SimpleTeamMemberDto;
 import kr.teammanagers.team.dto.TeamMemberDto;
 import kr.teammanagers.team.dto.request.CreateTeam;
 import kr.teammanagers.team.dto.request.CreateTeamComment;
 import kr.teammanagers.team.dto.request.CreateTeamPassword;
 import kr.teammanagers.team.dto.response.CreateTeamResult;
-import kr.teammanagers.team.dto.response.GetTeam;
-import kr.teammanagers.team.dto.response.GetTeamMember;
 import kr.teammanagers.team.dto.response.UpdateTeamEndResult;
 import kr.teammanagers.team.repository.TeamManageRepository;
 import kr.teammanagers.team.repository.TeamRepository;
@@ -36,9 +33,9 @@ import java.util.List;
 import static kr.teammanagers.team.constant.TeamConstant.*;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
-public class TeamService {
+public class TeamCommandServiceImpl implements TeamCommandService {
 
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
@@ -51,6 +48,7 @@ public class TeamService {
     private final AmazonConfig amazonConfig;
     private final CommentRepository commentRepository;
 
+    @Override
     @Transactional
     public CreateTeamResult createTeam(final Long authId, final CreateTeam request, final MultipartFile imageFile) {
         Member member = memberRepository.getReferenceById(authId);
@@ -77,6 +75,7 @@ public class TeamService {
         return CreateTeamResult.from(team);
     }
 
+    @Override
     @Transactional
     public void createTeamPassword(final Long teamId, final CreateTeamPassword request) {
         Team team = teamRepository.findById(teamId)
@@ -84,35 +83,7 @@ public class TeamService {
         team.updatePassword(request.password());
     }
 
-    public GetTeam getTeamById(final Long teamId) {
-        return teamRepository.findById(teamId)
-                .map(team -> {
-                    List<Tag> tagList = tagTeamRepository.findAllByTeamId(team.getId()).stream()
-                            .map(TagTeam::getTag).toList();
-                    return GetTeam.from(team, tagList);
-                })
-                .orElseThrow(RuntimeException::new);        // TODO : 예외 처리 필요
-
-    }
-
-    public GetTeam getTeamByTeamCode(final String teamCode) {
-        return teamRepository.findByTeamCode(teamCode)
-                .map(team -> {
-                    List<Tag> tagList = tagTeamRepository.findAllByTeamId(team.getId()).stream()
-                            .map(TagTeam::getTag).toList();
-                    return GetTeam.from(team, tagList);
-                })
-                .orElse(null);
-    }
-
-    public GetTeamMember getTeamMember(final Long teamId) {
-        List<SimpleTeamMemberDto> memberList = teamManageRepository.findAllByTeamId(teamId).stream()
-                .map(SimpleTeamMemberDto::from)
-                .toList();
-
-        return GetTeamMember.from(memberList);
-    }
-
+    @Override
     @Transactional
     public UpdateTeamEndResult updateTeamState(final Long authId, final Long teamId) {
         Team team = teamRepository.findById(teamId)
@@ -129,6 +100,7 @@ public class TeamService {
         return UpdateTeamEndResult.from(teamMemberList);
     }
 
+    @Override
     @Transactional
     public void createComment(final CreateTeamComment request) {
         request.commentList()
@@ -143,13 +115,6 @@ public class TeamService {
                     comment.setMember(memberRepository.getReferenceById(memberId));
                     commentRepository.save(comment);
                 });
-    }
-
-    public Long countTeamMembersByTeamManageId(final Long teamMangeId) {
-        Long teamId = teamManageRepository.findById(teamMangeId)
-                .orElseThrow(RuntimeException::new)
-                .getTeam().getId();
-        return teamManageRepository.countByTeamId(teamId);
     }
 
     private String encodeNumberToChars(final Long teamId) {

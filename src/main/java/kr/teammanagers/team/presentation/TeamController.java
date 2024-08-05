@@ -2,7 +2,8 @@ package kr.teammanagers.team.presentation;
 
 import jakarta.validation.Valid;
 import kr.teammanagers.common.payload.code.ApiPayload;
-import kr.teammanagers.team.application.TeamService;
+import kr.teammanagers.team.application.TeamCommandService;
+import kr.teammanagers.team.application.TeamQueryService;
 import kr.teammanagers.team.dto.request.CreateTeam;
 import kr.teammanagers.team.dto.request.CreateTeamComment;
 import kr.teammanagers.team.dto.request.CreateTeamPassword;
@@ -19,7 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class TeamController {
 
-    private final TeamService teamService;
+    private final TeamQueryService teamQueryService;
+    private final TeamCommandService teamCommandService;
 
     @PostMapping("/team")
     public ApiPayload<CreateTeamResult> create(
@@ -27,7 +29,7 @@ public class TeamController {
             @RequestPart(name = "createTeam") @Valid final CreateTeam createTeam,
             @RequestPart(name = "imageFile", required = false) final MultipartFile imageFile
     ) {
-        CreateTeamResult result = teamService.createTeam(1L, createTeam, imageFile);       // TODO : 인증 객체 구현시 auth.id로 변경 필요
+        CreateTeamResult result = teamCommandService.createTeam(1L, createTeam, imageFile);       // TODO : 인증 객체 구현시 auth.id로 변경 필요
         return ApiPayload.onSuccess(result);
     }
 
@@ -37,7 +39,7 @@ public class TeamController {
             @PathVariable("teamId") final Long teamId,
             @RequestBody @Valid final CreateTeamPassword createTeamPassword
     ) {
-        teamService.createTeamPassword(teamId, createTeamPassword);
+        teamCommandService.createTeamPassword(teamId, createTeamPassword);
         return ApiPayload.onSuccess();
     }
 
@@ -46,7 +48,7 @@ public class TeamController {
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @PathVariable("teamId") final Long teamId
     ) {
-        GetTeam result = teamService.getTeamById(teamId);
+        GetTeam result = teamQueryService.getTeamById(teamId);
         return ApiPayload.onSuccess(result);
     }
 
@@ -55,7 +57,7 @@ public class TeamController {
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @RequestParam("teamCode") final String teamCode
     ) {
-        GetTeam result = teamService.getTeamByTeamCode(teamCode);
+        GetTeam result = teamQueryService.getTeamByTeamCode(teamCode);
         return ApiPayload.onSuccess(result);
     }
 
@@ -64,7 +66,7 @@ public class TeamController {
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @PathVariable("teamId") final Long teamId
     ) {
-        GetTeamMember result = teamService.getTeamMember(teamId);
+        GetTeamMember result = teamQueryService.getTeamMember(teamId);
         return ApiPayload.onSuccess(result);
     }
 
@@ -73,7 +75,7 @@ public class TeamController {
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @PathVariable("teamId") final Long teamId
     ) {
-        UpdateTeamEndResult result = teamService.updateTeamState(1L, teamId);
+        UpdateTeamEndResult result = teamCommandService.updateTeamState(1L, teamId);
         return ApiPayload.onSuccess(result);
     }
 
@@ -82,7 +84,7 @@ public class TeamController {
 //            @AuthenticationPrincipal final AuthDto auth         // TODO : 인증 객체 구현 필요
             @RequestBody @Valid final CreateTeamComment createTeamComment
     ) {
-        teamService.createComment(createTeamComment);
+        teamCommandService.createComment(createTeamComment);
         return ApiPayload.onSuccess();
     }
 }
