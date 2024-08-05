@@ -18,25 +18,25 @@ public enum ErrorStatus implements ErrorBaseCode {
     _NOT_FOUND(HttpStatus.NOT_FOUND, "404", "찾을 수 없습니다."),
 
     // 팀 관련 응답
-    TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "TEAM4001", "존재하지 않는 팀입니다."),
+    TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "TEAM404", "존재하지 않는 팀입니다."),
 
     // 팀관리 관련 응답
-    TEAM_MANAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "TEAMMANAGE4001", "존재하지 않는 팀관리입니다."),
+    TEAM_MANAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "TEAMMANAGE404", "존재하지 않는 팀관리입니다."),
 
     // 투두 관련 응답
-    TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "TODO4001", "존재하지 않는 투두입니다."),
+    TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "TODO404", "존재하지 않는 투두입니다."),
 
     // 멤버 관련 응답
-    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER4001", "존재하지 않는 유저입니다."),
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER404", "존재하지 않는 유저입니다."),
 
     // 일정 관련 응답
-    CALENDAR_NOT_FOUND(HttpStatus.NOT_FOUND, "CALENDAR4001", "존재하지 않는 일정입니다."),
+    CALENDAR_NOT_FOUND(HttpStatus.NOT_FOUND, "CALENDAR404", "존재하지 않는 일정입니다."),
 
     // 알림 관련 응답
-    ALARM_NOT_FOUND(HttpStatus.NOT_FOUND, "ALARM4001", "존재하지 않는 알림입니다."),
+    ALARM_NOT_FOUND(HttpStatus.NOT_FOUND, "ALARM404", "존재하지 않는 알림입니다."),
 
     // 스케줄 관련 응답
-    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE4001", "존재하지 않는 스케줄입니다.")
+    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE404", "존재하지 않는 스케줄입니다.")
     ;
 
     private final HttpStatus httpStatus;
@@ -50,6 +50,11 @@ public enum ErrorStatus implements ErrorBaseCode {
 
     @Override
     public ErrorReasonDto getReasonHttpStatus() {
-        return null;
+        return ErrorReasonDto.builder()
+                .message(message)
+                .code(code)
+                .isSuccess(false)
+                .httpStatus(httpStatus)
+                .build();
     }
 }
