@@ -1,5 +1,6 @@
 package kr.teammanagers.team.presentation;
 
+import jakarta.validation.Valid;
 import kr.teammanagers.common.payload.code.ApiPayload;
 import kr.teammanagers.team.application.TeamService;
 import kr.teammanagers.team.dto.request.CreateTeam;
@@ -23,7 +24,7 @@ public class TeamController {
     @PostMapping("/team")
     public ApiPayload<CreateTeamResult> create(
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
-            @RequestPart(name = "createTeam") final CreateTeam createTeam,
+            @RequestPart(name = "createTeam") @Valid final CreateTeam createTeam,
             @RequestPart(name = "imageFile", required = false) final MultipartFile imageFile
     ) {
         CreateTeamResult result = teamService.createTeam(1L, createTeam, imageFile);       // TODO : 인증 객체 구현시 auth.id로 변경 필요
@@ -34,7 +35,7 @@ public class TeamController {
     public ApiPayload<Void> createPassword(
 //            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
             @PathVariable("teamId") final Long teamId,
-            @RequestBody final CreateTeamPassword createTeamPassword
+            @RequestBody @Valid final CreateTeamPassword createTeamPassword
     ) {
         teamService.createTeamPassword(teamId, createTeamPassword);
         return ApiPayload.onSuccess();
@@ -79,7 +80,7 @@ public class TeamController {
     @PostMapping("/team/comment")
     public ApiPayload<Void> createComment(
 //            @AuthenticationPrincipal final AuthDto auth         // TODO : 인증 객체 구현 필요
-            @RequestBody final CreateTeamComment createTeamComment
+            @RequestBody @Valid final CreateTeamComment createTeamComment
     ) {
         teamService.createComment(createTeamComment);
         return ApiPayload.onSuccess();
