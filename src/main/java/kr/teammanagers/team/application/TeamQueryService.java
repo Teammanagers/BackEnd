@@ -9,4 +9,6 @@ public interface TeamQueryService {
     GetTeam getTeamByTeamCode(String teamCode);
 
     GetTeamMember getTeamMember(Long teamId);
+
+    Long countTeamMembersByTeamManageId(Long teamManageId);
 }
