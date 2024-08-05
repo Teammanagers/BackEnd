@@ -1,5 +1,6 @@
 package kr.teammanagers.team.application;
 
+import kr.teammanagers.global.exception.GeneralException;
 import kr.teammanagers.tag.domain.Tag;
 import kr.teammanagers.tag.domain.TagTeam;
 import kr.teammanagers.tag.repository.TagTeamRepository;
@@ -13,6 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static kr.teammanagers.common.payload.code.status.ErrorStatus.TEAM_MANAGE_NOT_FOUND;
+import static kr.teammanagers.common.payload.code.status.ErrorStatus.TEAM_NOT_FOUND;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,8 +35,7 @@ public class TeamQueryServiceImpl implements TeamQueryService {
                             .map(TagTeam::getTag).toList();
                     return GetTeam.from(team, tagList);
                 })
-                .orElseThrow(RuntimeException::new);        // TODO : 예외 처리 필요
-
+                .orElseThrow(() -> new GeneralException(TEAM_NOT_FOUND));
     }
 
     @Override
@@ -53,5 +56,13 @@ public class TeamQueryServiceImpl implements TeamQueryService {
                 .toList();
 
         return GetTeamMember.from(memberList);
+    }
+
+    @Override
+    public Long countTeamMembersByTeamManageId(Long teamManageId) {
+        Long teamId = teamManageRepository.findById(teamManageId)
+                .orElseThrow(() -> new GeneralException(TEAM_MANAGE_NOT_FOUND))
+                .getTeam().getId();
+        return teamManageRepository.countByTeamId(teamId);
     }
 }

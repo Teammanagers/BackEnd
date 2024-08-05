@@ -2,6 +2,7 @@ package kr.teammanagers.team.application;
 
 import kr.teammanagers.common.Status;
 import kr.teammanagers.global.config.AmazonConfig;
+import kr.teammanagers.global.exception.GeneralException;
 import kr.teammanagers.global.provider.AmazonS3Provider;
 import kr.teammanagers.member.domain.Comment;
 import kr.teammanagers.member.domain.Member;
@@ -30,6 +31,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static kr.teammanagers.common.payload.code.status.ErrorStatus.TEAM_MANAGE_NOT_FOUND;
+import static kr.teammanagers.common.payload.code.status.ErrorStatus.TEAM_NOT_FOUND;
 import static kr.teammanagers.team.constant.TeamConstant.*;
 
 @Service
@@ -49,7 +52,6 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     private final CommentRepository commentRepository;
 
     @Override
-    @Transactional
     public CreateTeamResult createTeam(final Long authId, final CreateTeam request, final MultipartFile imageFile) {
         Member member = memberRepository.getReferenceById(authId);
         String imageUrl = amazonS3Provider.uploadImage(
@@ -76,18 +78,16 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     }
 
     @Override
-    @Transactional
     public void createTeamPassword(final Long teamId, final CreateTeamPassword request) {
         Team team = teamRepository.findById(teamId)
-                .orElseThrow(RuntimeException::new);        // TODO : 예외 처리 필요
+                .orElseThrow(() -> new GeneralException(TEAM_NOT_FOUND));
         team.updatePassword(request.password());
     }
 
     @Override
-    @Transactional
     public UpdateTeamEndResult updateTeamState(final Long authId, final Long teamId) {
         Team team = teamRepository.findById(teamId)
-                .orElseThrow(RuntimeException::new);        // TODO : 예외 처리 필요
+                .orElseThrow(() -> new GeneralException(TEAM_NOT_FOUND));
         team.updateStatus(Status.COMPLETED);
         List<TeamMemberDto> teamMemberList = teamManageRepository.findAllByTeamId(teamId).stream()
                 .filter(teamManage -> !teamManage.getMember().getId().equals(authId))
@@ -101,12 +101,11 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     }
 
     @Override
-    @Transactional
     public void createComment(final CreateTeamComment request) {
         request.commentList()
                 .forEach(registerCommentDto -> {
                     Long memberId = teamManageRepository.findById(registerCommentDto.teamManageId())
-                            .orElseThrow(RuntimeException::new)     // TODO : 예외 처리 필요
+                            .orElseThrow(() -> new GeneralException(TEAM_MANAGE_NOT_FOUND))
                             .getMember().getId();
                     Comment comment = Comment.builder()
                             .content(registerCommentDto.content())
