@@ -1,11 +1,11 @@
-package kr.teammanagers.tag.exception;
+package kr.teammanagers.tag.exception.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.List;
 
-public class TagMaxSizeValidator implements ConstraintValidator<TagMaxSize, List<?>> {
+public class TagMaxSizeValidator implements ConstraintValidator<TagMaxSize, List<String>> {
 
     private int maxSize;
 
@@ -15,7 +15,7 @@ public class TagMaxSizeValidator implements ConstraintValidator<TagMaxSize, List
     }
 
     @Override
-    public boolean isValid(List<?> value, ConstraintValidatorContext context) {
+    public boolean isValid(List<String> value, ConstraintValidatorContext context) {
         return value == null || value.size() <= maxSize;
     }
 }
