@@ -32,6 +32,9 @@ public enum ErrorStatus implements ErrorBaseCode {
     // 일정 관련 응답
     CALENDAR_NOT_FOUND(HttpStatus.NOT_FOUND, "CALENDAR4001", "존재하지 않는 일정입니다."),
 
+    // 알림 관련 응답
+    ALARM_NOT_FOUND(HttpStatus.NOT_FOUND, "ALARM4001", "존재하지 않는 알림입니다."),
+
     // 스케줄 관련 응답
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE4001", "존재하지 않는 스케줄입니다.")
     ;
