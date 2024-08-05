@@ -145,6 +145,13 @@ public class TeamService {
                 });
     }
 
+    public Long countTeamMembersByTeamManageId(final Long teamMangeId) {
+        Long teamId = teamManageRepository.findById(teamMangeId)
+                .orElseThrow(RuntimeException::new)
+                .getTeam().getId();
+        return teamManageRepository.countByTeamId(teamId);
+    }
+
     private String encodeNumberToChars(final Long teamId) {
         StringBuilder sb = new StringBuilder();
         Long number = teamId;
