@@ -1,8 +1,8 @@
-package kr.teammanagers.auth.controller;
+package kr.teammanagers.auth.presentation;
 
 import kr.teammanagers.global.provider.TokenProvider;
 import kr.teammanagers.auth.dto.TokenDto;
-import kr.teammanagers.auth.service.TokenService;
+import kr.teammanagers.auth.Application.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

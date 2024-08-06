@@ -13,8 +13,9 @@ import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 import jakarta.annotation.PostConstruct;
 
+import kr.teammanagers.auth.dto.PrincipalDetails;
 import kr.teammanagers.auth.jwt.domain.MemberToken;
-import kr.teammanagers.auth.service.TokenService;
+import kr.teammanagers.auth.Application.TokenService;
 import kr.teammanagers.global.exception.TokenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,7 +58,8 @@ public class TokenProvider {
 
     public void generateRefreshToken(Authentication authentication, String accessToken) {
         String refreshToken = generateToken(authentication, refreshTokenExpireTime);
-        tokenService.saveOrUpdate(authentication.getName(), refreshToken, accessToken);
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        tokenService.saveOrUpdate(getUsername(authentication), refreshToken, accessToken);
     }
 
     private String generateToken(Authentication authentication, long expireTime) {
@@ -68,8 +70,10 @@ public class TokenProvider {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining());
 
+        String username = getUsername(authentication);
+
         return Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(username)
                 .claim(KEY_ROLE, authorities)
                 .setIssuedAt(now)
                 .setExpiration(expiredDate)
@@ -124,6 +128,18 @@ public class TokenProvider {
             throw new TokenException(INVALID_TOKEN);
         } catch (SecurityException e) {
             throw new TokenException(INVALID_JWT_SIGNATURE);
+        }
+    }
+
+    // authentication.getPrincipal();시 가져오는 클래스형에 따라 형변환 진행 후 ProviderId를 리턴.
+    private String getUsername(Authentication authentication) {
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof PrincipalDetails) {
+            return ((PrincipalDetails) principal).getUsername();
+        } else if (principal instanceof User) {
+            return ((User) principal).getUsername();
+        } else {
+            throw new IllegalArgumentException("Unexpected principal type: " + principal.getClass().getName());
         }
     }
 }
