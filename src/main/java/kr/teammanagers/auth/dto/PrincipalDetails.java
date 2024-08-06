@@ -59,4 +59,5 @@ public record PrincipalDetails(
     public boolean isEnabled() {
         return true;
     }
+
 }

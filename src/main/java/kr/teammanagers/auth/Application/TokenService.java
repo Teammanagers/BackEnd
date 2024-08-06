@@ -1,10 +1,7 @@
-package kr.teammanagers.auth.service;
-
-import static kr.teammanagers.global.exception.ErrorCode.TOKEN_EXPIRED;
+package kr.teammanagers.auth.Application;
 
 import kr.teammanagers.auth.jwt.domain.MemberToken;
 import kr.teammanagers.auth.jwt.repository.MemberTokenRepository;
-import kr.teammanagers.global.exception.TokenException;
 import kr.teammanagers.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,10 +42,10 @@ public class TokenService {
         }
     }
 
-//    @Transactional
-//    public void deleteTokensByMember(Member member) {
-//        memberTokenRepository.deleteByMember(member);
-//    }
+/*    @Transactional
+    public void deleteTokensByMember(Member member) {
+        memberTokenRepository.deleteByMember(member);
+    }*/
 
     @Transactional(readOnly = true)
     public Optional<MemberToken> getTokenByAccessToken(String accessToken) {

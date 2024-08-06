@@ -1,4 +1,4 @@
-package kr.teammanagers.auth.service;
+package kr.teammanagers.auth.Application;
 import kr.teammanagers.auth.dto.OAuth2UserInfo;
 import kr.teammanagers.auth.dto.PrincipalDetails;
 import kr.teammanagers.global.exception.AuthException;
@@ -25,7 +25,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Transactional
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException, AuthException {
-        log.info("loadUser");
         // 1. 유저 정보(attributes) 가져오기
         Map<String, Object> oAuth2UserAttributes = super.loadUser(userRequest).getAttributes();
 
