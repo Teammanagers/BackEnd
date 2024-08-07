@@ -102,7 +102,7 @@ public class TokenProvider {
 
             if (validateToken(refreshToken)) {
                 String reissuedAccessToken = generateAccessToken(getAuthentication(refreshToken));
-                tokenService.saveOrUpdate(token.getMember().getId().toString(), refreshToken, reissuedAccessToken);
+                tokenService.saveOrUpdate(token.getMember().getProviderId(), refreshToken, reissuedAccessToken);
                 return reissuedAccessToken;
             }
         }
