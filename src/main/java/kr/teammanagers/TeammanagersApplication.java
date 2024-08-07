@@ -9,9 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableJpaAuditing
 @EnableScheduling
 public class TeammanagersApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(TeammanagersApplication.class, args);
 	}
-
 }
