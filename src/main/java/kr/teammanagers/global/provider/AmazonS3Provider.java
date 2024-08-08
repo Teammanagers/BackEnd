@@ -1,7 +1,6 @@
 package kr.teammanagers.global.provider;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import kr.teammanagers.global.config.AmazonConfig;
@@ -37,7 +36,8 @@ public class AmazonS3Provider {
     }
 
     // 일반 이미지 업로드 (Url을 통해 바로 조회할 수 있도록 변경)
-    public String uploadImage(final String keyName, final MultipartFile file) {
+    public void uploadImage(final String keyName, final MultipartFile file) {
+        log.info("uploadImage 로직 진입");
         String originName = file.getOriginalFilename();
         String ext = Objects.requireNonNull(originName).substring(originName.lastIndexOf(".")); // 확장자
 
@@ -45,12 +45,10 @@ public class AmazonS3Provider {
         metadata.setContentLength(file.getSize());
         metadata.setContentType(file.getContentType()); // 다운로드가 아닌 브라우저로 직접 조회를 하기 위함
         try {
-            amazonS3.putObject(new PutObjectRequest(amazonConfig.getBucket(), keyName + ext, file.getInputStream(), metadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            amazonS3.putObject(new PutObjectRequest(amazonConfig.getBucket(), keyName + ext, file.getInputStream(), metadata));
         } catch (IOException e) {
             log.error(AmazonConstant.FILE_UPLOAD_ERROR + ": {}", (Object) e.getStackTrace());
         }
-        return amazonS3.getUrl(amazonConfig.getBucket(), keyName + ext).toString();
     }
 
     public String extractImageNameFromUrl(final String url) {
