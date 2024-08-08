@@ -115,12 +115,11 @@ public class MemberService {
     }
 
     private void updateProfileImage(final MultipartFile imageFile, final Member member) {
-        if (member.getImageUrl() != null) {
-            amazonS3Provider.deleteFile(
-                    amazonS3Provider.extractImageNameFromUrl(member.getImageUrl()));
+        String memberProfilePath = amazonConfig.getMemberProfilePath();
+        if (amazonS3Provider.isFileExist(memberProfilePath, member.getId())) {
+            amazonS3Provider.deleteFile(memberProfilePath, member.getId());
         }
-        member.updateImageUrl(amazonS3Provider.uploadImage(
-                amazonS3Provider.generateKeyName(amazonConfig.getMemberProfilePath()), imageFile));
+        amazonS3Provider.uploadImage(memberProfilePath, member.getId(), imageFile);
     }
 
     private void updateMemberBelong(final String belong, final Member member) {
