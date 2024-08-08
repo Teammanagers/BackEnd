@@ -54,9 +54,10 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     @Override
     public CreateTeamResult createTeam(final Long authId, final CreateTeam request, final MultipartFile imageFile) {
         Member member = memberRepository.getReferenceById(authId);
-        String imageUrl = amazonS3Provider.uploadImage(
-                amazonS3Provider.generateKeyName(amazonConfig.getTeamProfilePath()), imageFile);
-        Team team = teamRepository.save(request.toTeam(imageUrl));
+        Team team = teamRepository.save(request.toTeam());
+        if (imageFile != null) {
+            amazonS3Provider.uploadImage(amazonConfig.getTeamProfilePath(), team.getId(), imageFile);
+        }
         team.updateTeamCode(encodeNumberToChars(team.getId()));
 
         request.teamTagList().stream()
