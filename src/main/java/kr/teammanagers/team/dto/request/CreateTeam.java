@@ -17,10 +17,9 @@ public record CreateTeam(
         @TagMaxSize(message = TagErrorConstant.TAG_MAX_SIZE_LIMIT)
         List<String> teamTagList
 ) {
-    public Team toTeam(final String imageUrl) {
+    public Team toTeam() {
         return Team.builder()
                 .title(title)
-                .teamImageUrl(imageUrl)
                 .status(Status.PROCEEDING)
                 .password(TeamConstant.DEFAULT_TEAM_PASSWORD)
                 .build();
