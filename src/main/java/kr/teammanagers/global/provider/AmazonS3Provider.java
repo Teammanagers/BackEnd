@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -36,32 +35,22 @@ public class AmazonS3Provider {
     }
 
     // 일반 이미지 업로드 (Url을 통해 바로 조회할 수 있도록 변경)
-    public void uploadImage(final String keyName, final MultipartFile file) {
-        log.info("uploadImage 로직 진입");
-        String originName = file.getOriginalFilename();
-        String ext = Objects.requireNonNull(originName).substring(originName.lastIndexOf(".")); // 확장자
-
+    public void uploadImage(final String filePath, final Long id, final MultipartFile file) {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
         metadata.setContentType(file.getContentType()); // 다운로드가 아닌 브라우저로 직접 조회를 하기 위함
         try {
-            amazonS3.putObject(new PutObjectRequest(amazonConfig.getBucket(), keyName + ext, file.getInputStream(), metadata));
+            amazonS3.putObject(new PutObjectRequest(amazonConfig.getBucket(), filePath + "/" + id, file.getInputStream(), metadata));
         } catch (IOException e) {
             log.error(AmazonConstant.FILE_UPLOAD_ERROR + ": {}", (Object) e.getStackTrace());
         }
     }
 
-    public String extractImageNameFromUrl(final String url) {
-        String bucket = amazonConfig.getBucket();
-        String prefix = "https://" + bucket + ".s3." + amazonConfig.getRegion() + ".amazonaws.com/";
-        return url.substring(prefix.length());
+    public boolean isFileExist(final String filePath, final Long id) {
+        return amazonS3.doesObjectExist(amazonConfig.getBucket(), filePath + "/" + id);
     }
 
-    public void deleteFile(final String fileName) {
-        amazonS3.deleteObject(amazonConfig.getBucket(), fileName);
-    }
-
-    public String generateKeyName(final String filePath) {
-        return filePath + '/' + UUID.randomUUID();
+    public void deleteFile(final String filePath, final Long id) {
+        amazonS3.deleteObject(amazonConfig.getBucket(), filePath + "/" + id);
     }
 }
