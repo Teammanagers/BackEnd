@@ -5,18 +5,13 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.Keys;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.crypto.SecretKey;
 import jakarta.annotation.PostConstruct;
-
+import kr.teammanagers.auth.Application.TokenService;
 import kr.teammanagers.auth.dto.PrincipalDetails;
 import kr.teammanagers.auth.jwt.domain.MemberToken;
-import kr.teammanagers.auth.Application.TokenService;
 import kr.teammanagers.global.exception.TokenException;
+import kr.teammanagers.member.domain.Member;
+import kr.teammanagers.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +21,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import javax.crypto.SecretKey;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static kr.teammanagers.global.exception.ErrorCode.INVALID_JWT_SIGNATURE;
 import static kr.teammanagers.global.exception.ErrorCode.INVALID_TOKEN;
@@ -46,6 +47,7 @@ public class TokenProvider {
 
     private static final String KEY_ROLE = "role";
     private final TokenService tokenService;
+    private final MemberRepository memberRepository;
 
     @PostConstruct
     public void init() {
@@ -84,8 +86,11 @@ public class TokenProvider {
     public Authentication getAuthentication(String token) {
         Claims claims = parseClaims(token);
         List<SimpleGrantedAuthority> authorities = getAuthorities(claims);
-
-        User principal = new User(claims.getSubject(), "", authorities);
+        Member member = memberRepository.findByProviderId(claims.getSubject())
+                .orElseThrow(RuntimeException::new);
+        PrincipalDetails principal = PrincipalDetails.builder()
+                .member(member)
+                .build();
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 

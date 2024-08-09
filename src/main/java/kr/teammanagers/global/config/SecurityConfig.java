@@ -62,7 +62,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth ->
                         oauth.userInfoEndpoint(c -> c.userService(oAuth2UserService))
                                 .successHandler(oAuth2SuccessHandler)
-                                .failureHandler(new OAuth2FailureHandler())
+                                .failureHandler(oAuth2FailureHandler)
                 )
 
                 .addFilterBefore(tokenAuthenticationFilter,
