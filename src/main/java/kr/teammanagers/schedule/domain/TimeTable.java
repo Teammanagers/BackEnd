@@ -16,5 +16,11 @@ public class TimeTable {
 
     @Column(nullable = false)
     private Character[] value = new Character[48];
+
+    public static TimeTable from(Character[] value) {
+        return TimeTable.builder()
+                .value(value)
+                .build();
+    }
 }
 

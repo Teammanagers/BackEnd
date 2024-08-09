@@ -4,15 +4,19 @@ import kr.teammanagers.member.domain.Member;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+
+import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+@Builder
 public record PrincipalDetails(
         Member member,
         Map<String, Object> attributes,
-        String attributeKey) implements OAuth2User, UserDetails {
+        String attributeKey
+) implements OAuth2User, UserDetails {
 
     @Override
     public String getName() {
@@ -59,4 +63,5 @@ public record PrincipalDetails(
     public boolean isEnabled() {
         return true;
     }
+
 }

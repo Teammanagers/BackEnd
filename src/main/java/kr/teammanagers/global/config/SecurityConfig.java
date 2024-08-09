@@ -2,7 +2,7 @@ package kr.teammanagers.global.config;
 
 import kr.teammanagers.auth.handler.OAuth2FailureHandler;
 import kr.teammanagers.auth.handler.OAuth2SuccessHandler;
-import kr.teammanagers.auth.service.CustomOAuth2UserService;
+import kr.teammanagers.auth.Application.CustomOAuth2UserService;
 import kr.teammanagers.global.exception.TokenAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -62,7 +62,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth ->
                         oauth.userInfoEndpoint(c -> c.userService(oAuth2UserService))
                                 .successHandler(oAuth2SuccessHandler)
-                                .failureHandler(new OAuth2FailureHandler())
+                                .failureHandler(oAuth2FailureHandler)
                 )
 
                 .addFilterBefore(tokenAuthenticationFilter,

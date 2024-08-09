@@ -21,9 +21,6 @@ public class Team extends AuditingField {
     @Column(nullable = false, length = 20)
     private String title;
 
-    @Column(name = "team_image_url")
-    private String teamImageUrl;
-
     @Column(name = "team_code", length = 8)
     private String teamCode;
 
@@ -35,9 +32,8 @@ public class Team extends AuditingField {
     private String password;
 
     @Builder
-    private Team(final String title, final String teamImageUrl, final String teamCode, final Status status, final String password) {
+    private Team(final String title, final String teamCode, final Status status, final String password) {
         this.title = title;
-        this.teamImageUrl = teamImageUrl;
         this.teamCode = teamCode;
         this.status = status;
         this.password = password;
