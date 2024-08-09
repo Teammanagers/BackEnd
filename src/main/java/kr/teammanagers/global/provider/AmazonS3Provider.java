@@ -1,6 +1,8 @@
 package kr.teammanagers.global.provider;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import kr.teammanagers.global.config.AmazonConfig;
@@ -11,7 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.UUID;
+import java.util.Date;
 
 @Slf4j
 @Component
@@ -22,19 +24,7 @@ public class AmazonS3Provider {
 
     private final AmazonConfig amazonConfig;
 
-    // 일반 파일 업로드
-    public String uploadFile(final String keyName, final MultipartFile file) {
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(file.getSize());
-        try {
-            amazonS3.putObject(new PutObjectRequest(amazonConfig.getBucket(), keyName, file.getInputStream(), metadata));
-        } catch (IOException e) {
-            log.error(AmazonConstant.FILE_UPLOAD_ERROR + ": {}", (Object) e.getStackTrace());
-        }
-        return amazonS3.getUrl(amazonConfig.getBucket(), keyName).toString();
-    }
-
-    // 일반 이미지 업로드 (Url을 통해 바로 조회할 수 있도록 변경)
+    // 일반 이미지 업로드
     public void uploadImage(final String filePath, final Long id, final MultipartFile file) {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
@@ -44,6 +34,24 @@ public class AmazonS3Provider {
         } catch (IOException e) {
             log.error(AmazonConstant.FILE_UPLOAD_ERROR + ": {}", (Object) e.getStackTrace());
         }
+    }
+
+    public String generateUrl(final String filePath, final Long id) {
+        // 서명된 URL의 유효 기간 설정
+        Date expiration = new Date();
+        expiration.setTime(expiration.getTime() + 1000 * 60 * 60);
+
+        // 서명된 URL 생성 요청
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(amazonConfig.getBucket(), filePath + "/" + id)
+                        .withMethod(HttpMethod.GET)
+                        .withExpiration(expiration);
+
+        // Content-Disposition을 inline으로 설정하여 다운로드가 아닌 브라우저에서 직접 보이도록 설정
+        generatePresignedUrlRequest.addRequestParameter("response-content-disposition", "inline");
+
+        // 서명된 URL 생성
+        return amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();
     }
 
     public boolean isFileExist(final String filePath, final Long id) {

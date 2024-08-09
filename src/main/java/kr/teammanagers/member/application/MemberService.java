@@ -52,7 +52,8 @@ public class MemberService {
         Member member = memberRepository.findById(authId).orElseThrow(RuntimeException::new);       // TODO : 예외 처리 필요
         List<Tag> tagList = tagModuleService.getAllConfidentRole(authId);
         List<Comment> commentList = commentRepository.findAllByMemberId(authId);
-        return GetProfile.of(member, tagList, commentList);
+        String imageUrl = amazonS3Provider.generateUrl(amazonConfig.getMemberProfilePath(), member.getId());
+        return GetProfile.of(member, tagList, commentList, imageUrl);
     }
 
     @Transactional
@@ -108,7 +109,8 @@ public class MemberService {
                 .map(team -> {
                     List<Tag> tagList = tagTeamRepository.findAllByTeamId(team.getId()).stream()
                             .map(TagTeam::getTag).toList();
-                    return TeamDto.from(team, tagList);
+                    return TeamDto.from(team, tagList,
+                            amazonS3Provider.generateUrl(amazonConfig.getTeamProfilePath(), team.getId()));
                 })
                 .toList();
         return GetMemberTeam.of(member, teamList);
