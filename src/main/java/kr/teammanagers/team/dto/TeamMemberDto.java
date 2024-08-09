@@ -14,11 +14,11 @@ public record TeamMemberDto(
         String imageUrl,
         List<TagDto> roleList
 ) {
-    public static TeamMemberDto of(final TeamManage teamManage, final List<Tag> tagList) {
+    public static TeamMemberDto of(final TeamManage teamManage, final List<Tag> tagList, final String imageUrl) {
         return TeamMemberDto.builder()
                 .teamManageId(teamManage.getId())
                 .name(teamManage.getMember().getName())
-                .imageUrl(teamManage.getMember().getImageUrl())
+                .imageUrl(imageUrl)
                 .roleList(tagList.stream()
                         .map(TagDto::from)
                         .toList())

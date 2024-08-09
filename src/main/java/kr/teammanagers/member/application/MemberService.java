@@ -52,7 +52,8 @@ public class MemberService {
         Member member = memberRepository.findById(authId).orElseThrow(RuntimeException::new);       // TODO : 예외 처리 필요
         List<Tag> tagList = tagModuleService.getAllConfidentRole(authId);
         List<Comment> commentList = commentRepository.findAllByMemberId(authId);
-        return GetProfile.of(member, tagList, commentList);
+        String imageUrl = amazonS3Provider.generateUrl(amazonConfig.getMemberProfilePath(), member.getId());
+        return GetProfile.of(member, tagList, commentList, imageUrl);
     }
 
     @Transactional
@@ -108,19 +109,19 @@ public class MemberService {
                 .map(team -> {
                     List<Tag> tagList = tagTeamRepository.findAllByTeamId(team.getId()).stream()
                             .map(TagTeam::getTag).toList();
-                    return TeamDto.from(team, tagList);
+                    return TeamDto.from(team, tagList,
+                            amazonS3Provider.generateUrl(amazonConfig.getTeamProfilePath(), team.getId()));
                 })
                 .toList();
         return GetMemberTeam.of(member, teamList);
     }
 
     private void updateProfileImage(final MultipartFile imageFile, final Member member) {
-        if (member.getImageUrl() != null) {
-            amazonS3Provider.deleteFile(
-                    amazonS3Provider.extractImageNameFromUrl(member.getImageUrl()));
+        String memberProfilePath = amazonConfig.getMemberProfilePath();
+        if (amazonS3Provider.isFileExist(memberProfilePath, member.getId())) {
+            amazonS3Provider.deleteFile(memberProfilePath, member.getId());
         }
-        member.updateImageUrl(amazonS3Provider.uploadImage(
-                amazonS3Provider.generateKeyName(amazonConfig.getMemberProfilePath()), imageFile));
+        amazonS3Provider.uploadImage(memberProfilePath, member.getId(), imageFile);
     }
 
     private void updateMemberBelong(final String belong, final Member member) {

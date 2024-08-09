@@ -11,9 +11,9 @@ import java.util.List;
 public record GetTeam(
         TeamDto team
 ) {
-    public static GetTeam from(final Team team, final List<Tag> tagList) {
+    public static GetTeam from(final Team team, final List<Tag> tagList, final String imageUrl) {
         return GetTeam.builder()
-                .team(TeamDto.from(team, tagList))
+                .team(TeamDto.from(team, tagList, imageUrl))
                 .build();
     }
 }

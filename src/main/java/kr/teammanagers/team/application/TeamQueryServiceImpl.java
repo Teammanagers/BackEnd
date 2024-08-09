@@ -1,6 +1,8 @@
 package kr.teammanagers.team.application;
 
+import kr.teammanagers.global.config.AmazonConfig;
 import kr.teammanagers.global.exception.GeneralException;
+import kr.teammanagers.global.provider.AmazonS3Provider;
 import kr.teammanagers.tag.domain.Tag;
 import kr.teammanagers.tag.domain.TagTeam;
 import kr.teammanagers.tag.repository.TagTeamRepository;
@@ -27,13 +29,17 @@ public class TeamQueryServiceImpl implements TeamQueryService {
     private final TagTeamRepository tagTeamRepository;
     private final TeamManageRepository teamManageRepository;
 
+    private final AmazonS3Provider amazonS3Provider;
+    private final AmazonConfig amazonConfig;
+
     @Override
     public GetTeam getTeamById(final Long teamId) {
         return teamRepository.findById(teamId)
                 .map(team -> {
                     List<Tag> tagList = tagTeamRepository.findAllByTeamId(team.getId()).stream()
                             .map(TagTeam::getTag).toList();
-                    return GetTeam.from(team, tagList);
+                    return GetTeam.from(team, tagList,
+                            amazonS3Provider.generateUrl(amazonConfig.getTeamProfilePath(), team.getId()));
                 })
                 .orElseThrow(() -> new GeneralException(TEAM_NOT_FOUND));
     }
@@ -44,7 +50,8 @@ public class TeamQueryServiceImpl implements TeamQueryService {
                 .map(team -> {
                     List<Tag> tagList = tagTeamRepository.findAllByTeamId(team.getId()).stream()
                             .map(TagTeam::getTag).toList();
-                    return GetTeam.from(team, tagList);
+                    return GetTeam.from(team, tagList,
+                            amazonS3Provider.generateUrl(amazonConfig.getTeamProfilePath(), team.getId()));
                 })
                 .orElse(null);
     }

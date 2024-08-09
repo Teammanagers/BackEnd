@@ -16,12 +16,12 @@ public record TeamDto(
         List<TagDto> teamTagList
 ) {
 
-    public static TeamDto from(final Team team, final List<Tag> tagList) {
+    public static TeamDto from(final Team team, final List<Tag> tagList, final String imageUrl) {
         return TeamDto.builder()
                 .teamId(team.getId())
                 .title(team.getTitle())
                 .teamCode(team.getTeamCode())
-                .imageUrl(team.getTeamImageUrl())
+                .imageUrl(imageUrl)
                 .teamTagList(tagList.stream()
                         .map(TagDto::from)
                         .toList())

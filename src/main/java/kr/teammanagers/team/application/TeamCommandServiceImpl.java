@@ -45,18 +45,19 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     private final TagTeamRepository tagTeamRepository;
     private final TeamManageRepository teamManageRepository;
     private final TeamRoleRepository teamRoleRepository;
+    private final CommentRepository commentRepository;
 
     private final TagModuleService tagModuleService;
     private final AmazonS3Provider amazonS3Provider;
     private final AmazonConfig amazonConfig;
-    private final CommentRepository commentRepository;
 
     @Override
     public CreateTeamResult createTeam(final Long authId, final CreateTeam request, final MultipartFile imageFile) {
         Member member = memberRepository.getReferenceById(authId);
-        String imageUrl = amazonS3Provider.uploadImage(
-                amazonS3Provider.generateKeyName(amazonConfig.getTeamProfilePath()), imageFile);
-        Team team = teamRepository.save(request.toTeam(imageUrl));
+        Team team = teamRepository.save(request.toTeam());
+        if (imageFile != null) {
+            amazonS3Provider.uploadImage(amazonConfig.getTeamProfilePath(), team.getId(), imageFile);
+        }
         team.updateTeamCode(encodeNumberToChars(team.getId()));
 
         request.teamTagList().stream()
@@ -94,7 +95,8 @@ public class TeamCommandServiceImpl implements TeamCommandService {
                 .map(teamManage -> {
                     List<Tag> tagList = teamRoleRepository.findAllByTeamManageId(teamManage.getId()).stream()
                             .map(TeamRole::getTag).toList();
-                    return TeamMemberDto.of(teamManage, tagList);
+                    return TeamMemberDto.of(teamManage, tagList,
+                            amazonS3Provider.generateUrl(amazonConfig.getMemberProfilePath(), teamManage.getMember().getId()));
                 }).toList();
 
         return UpdateTeamEndResult.from(teamMemberList);

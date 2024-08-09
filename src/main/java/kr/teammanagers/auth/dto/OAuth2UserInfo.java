@@ -1,16 +1,10 @@
 package kr.teammanagers.auth.dto;
 
-import kr.teammanagers.member.domain.Member;
-
 import jakarta.security.auth.message.AuthException;
+import kr.teammanagers.member.domain.Member;
 import lombok.Builder;
-import lombok.Data;
-import org.springframework.cglib.core.Local;
 
-import javax.crypto.KeyGenerator;
-import java.time.LocalDate;
 import java.util.Map;
-
 
 import static kr.teammanagers.global.exception.ErrorCode.ILLEGAL_REGISTRATION_ID;
 
@@ -68,7 +62,6 @@ public record OAuth2UserInfo(
                 .providerId(providerId)
                 .name(name)
                 .email(email)
-                .imageUrl(profile)
                 .birth(birth)
                 .phoneNumber(phoneNumber)
                 .build();

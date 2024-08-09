@@ -1,5 +1,6 @@
 package kr.teammanagers.member.presentation;
 
+import kr.teammanagers.auth.dto.PrincipalDetails;
 import kr.teammanagers.common.payload.code.ApiPayload;
 import kr.teammanagers.member.application.MemberService;
 import kr.teammanagers.member.dto.request.UpdateProfile;
@@ -8,10 +9,13 @@ import kr.teammanagers.member.dto.response.GetPortfolio;
 import kr.teammanagers.member.dto.response.GetProfile;
 import kr.teammanagers.member.dto.response.GetSimplePortfolioList;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -21,53 +25,53 @@ public class MemberController {
 
     @GetMapping("/member")
     public ApiPayload<GetProfile> getProfile(
-//            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
+            @AuthenticationPrincipal final PrincipalDetails auth
     ) {
-        GetProfile result = memberService.getProfile(1L);           // TODO : 인증 객체 구현시 auth.id로 변경 필요
+        GetProfile result = memberService.getProfile(auth.member().getId());
         return ApiPayload.onSuccess(result);
     }
 
     @PatchMapping(value = "/member", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiPayload<Void> updateProfile(
-//            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
+            @AuthenticationPrincipal final PrincipalDetails auth,
             @RequestPart(name = "updateProfile") final UpdateProfile updateProfile,
             @RequestPart(name = "imageFile", required = false) final MultipartFile imageFile
     ) {
-        memberService.updateProfile(1L, updateProfile, imageFile);             // TODO : 인증 객체 구현시 auth.id로 변경 필요
+        memberService.updateProfile(auth.member().getId(), updateProfile, imageFile);
         return ApiPayload.onSuccess();
     }
 
-    @PatchMapping( "/comment/{commentId}/state")
+    @PatchMapping("/comment/{commentId}/state")
     public ApiPayload<Void> updateCommentState(
-//            @AuthenticationPrincipal final AuthDto auth,          // TODO : 인증 객체 구현 필요
+            @AuthenticationPrincipal final PrincipalDetails auth,
             @PathVariable(name = "commentId") final Long commentId
     ) {
-        memberService.updateCommentState(commentId);            // TODO : 인증 객체 구현시 auth.id로 변경 필요
+        memberService.updateCommentState(commentId);
         return ApiPayload.onSuccess();
     }
 
     @GetMapping("/member/portfolio")
     public ApiPayload<GetSimplePortfolioList> getSimplePortfolioList(
-//            @AuthenticationPrincipal AuthDto auth,                                // TODO : 인증 객체 구현 필요
+            @AuthenticationPrincipal final PrincipalDetails auth
     ) {
-        GetSimplePortfolioList result = memberService.getSimplePortfolioList(1L);   // TODO : 인증 객체 구현시 auth.id로 변경 필요
+        GetSimplePortfolioList result = memberService.getSimplePortfolioList(auth.member().getId());
         return ApiPayload.onSuccess(result);
     }
 
     @GetMapping("/member/portfolio/{teamId}")
     public ApiPayload<GetPortfolio> getPortfolio(
-//            @AuthenticationPrincipal AuthDto auth,                                // TODO : 인증 객체 구현 필요
+            @AuthenticationPrincipal final PrincipalDetails auth,
             @PathVariable(name = "teamId") final Long teamId
     ) {
-        GetPortfolio result = memberService.getPortfolio(1L, teamId);               // TODO : 인증 객체 구현시 auth.id로 변경 필요
+        GetPortfolio result = memberService.getPortfolio(auth.member().getId(), teamId);
         return ApiPayload.onSuccess(result);
     }
 
     @GetMapping("/member/team")
     public ApiPayload<GetMemberTeam> getTeam(
-//            @AuthenticationPrincipal AuthDto auth,                                // TODO : 인증 객체 구현 필요
+            @AuthenticationPrincipal final PrincipalDetails auth
     ) {
-        GetMemberTeam result = memberService.getMemberTeam(1L);                     // TODO : 인증 객체 구현시 auth.id로 변경 필요
+        GetMemberTeam result = memberService.getMemberTeam(auth.member().getId());
         return ApiPayload.onSuccess(result);
     }
 }
