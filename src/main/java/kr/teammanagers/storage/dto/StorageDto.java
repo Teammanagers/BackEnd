@@ -3,6 +3,7 @@ package kr.teammanagers.storage.dto;
 import kr.teammanagers.storage.domain.TeamData;
 import lombok.Builder;
 
+import java.io.InputStream;
 import java.time.LocalDateTime;
 
 @Builder
@@ -12,7 +13,10 @@ public record StorageDto(
         String size,
         LocalDateTime uploadAt,
         String fileUrl,
-        String uploader
+        String uploader,
+        String fileExtension,
+        String contentType,
+        InputStream inputStream
 ) {
 
     public static StorageDto from(final TeamData teamData) {
@@ -23,6 +27,7 @@ public record StorageDto(
                 .uploadAt(teamData.getCreatedAt())
                 .fileUrl(teamData.getFileUrl())
                 .uploader(teamData.getTeamManage().getMember().getName())
+                .fileExtension(teamData.getFileExtension())
                 .build();
     }
 }
