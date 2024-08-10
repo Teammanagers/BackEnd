@@ -19,12 +19,12 @@ public class TodoRestController {
     private final TodoCommandService todoCommandService;
     private final TodoQueryService todoQueryService;
 
-    @PostMapping("/team/{teamManageId}/todo")
+    @PostMapping("/team/{teamId}/todo")
     public ApiPayload<Void> create(@AuthenticationPrincipal final PrincipalDetails auth,
                                    @RequestBody final CreateTodo request,
-                                   @PathVariable(name = "teamManageId") final Long teamManageId) {
+                                   @PathVariable(name = "teamId") final Long teamId) {
 
-        todoCommandService.createTodo(request, teamManageId);
+        todoCommandService.createTodo(request, auth.member().getId(), teamId);
         return ApiPayload.onSuccess();
     }
 
