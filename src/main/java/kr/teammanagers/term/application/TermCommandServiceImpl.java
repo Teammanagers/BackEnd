@@ -1,6 +1,5 @@
 package kr.teammanagers.term.application;
 
-import kr.teammanagers.auth.dto.PrincipalDetails;
 import kr.teammanagers.common.payload.code.status.ErrorStatus;
 import kr.teammanagers.global.exception.GeneralException;
 import kr.teammanagers.member.repository.MemberRepository;
