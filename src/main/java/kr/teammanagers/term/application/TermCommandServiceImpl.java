@@ -1,5 +1,6 @@
 package kr.teammanagers.term.application;
 
+import kr.teammanagers.auth.dto.PrincipalDetails;
 import kr.teammanagers.common.payload.code.status.ErrorStatus;
 import kr.teammanagers.global.exception.GeneralException;
 import kr.teammanagers.member.repository.MemberRepository;
@@ -19,10 +20,9 @@ public class TermCommandServiceImpl implements TermCommandService {
     private final MemberRepository memberRepository;
 
     @Override
-    public void createTerms(CreateTerms request) {
-        CheckedTerms newCheckedTerms = CreateTerms.from(request);
+    public void createTerms(Long memberId, CreateTerms request) {
 
-        Long memberId = 1L;     //Todo: 이후 수정
+        CheckedTerms newCheckedTerms = CreateTerms.from(request);
         newCheckedTerms.setMember(memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND)));
 
