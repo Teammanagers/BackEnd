@@ -4,7 +4,7 @@ import kr.teammanagers.memo.domain.Memo;
 import kr.teammanagers.memo.dto.request.CreateMemo;
 import kr.teammanagers.memo.dto.request.UpdateMemo;
 import kr.teammanagers.memo.repository.MemoRepository;
-import kr.teammanagers.tag.application.TagModuleService;
+import kr.teammanagers.tag.application.module.TagCommandModuleService;
 import kr.teammanagers.tag.domain.TagMemo;
 import kr.teammanagers.tag.repository.TagMemoRepository;
 import kr.teammanagers.team.domain.Team;
@@ -24,7 +24,7 @@ public class MemoCommandServiceImpl implements MemoCommandService {
     private final TeamRepository teamRepository;
     private final TagMemoRepository tagMemoRepository;
 
-    private final TagModuleService tagModuleService;
+    private final TagCommandModuleService tagCommandModuleService;
 
     @Override
     public void createMemo(final Long teamId, final CreateMemo request) {
@@ -34,7 +34,7 @@ public class MemoCommandServiceImpl implements MemoCommandService {
         memoRepository.save(memo);
 
         request.tagList().stream()
-                .map(tagModuleService::findOrCreateTag)
+                .map(tagCommandModuleService::findOrCreateTag)
                 .forEach(tag -> {
                     tagMemoRepository.save(
                             TagMemo.builder()
@@ -60,7 +60,7 @@ public class MemoCommandServiceImpl implements MemoCommandService {
                 .forEach(tagMemo -> {
                     Long oldTagId = tagMemo.getTag().getId();
                     tagMemoRepository.delete(tagMemo);
-                    tagModuleService.validateAndDeleteTagByTagId(oldTagId);
+                    tagCommandModuleService.validateAndDeleteTagByTagId(oldTagId);
                 });
         memoRepository.deleteById(memoId);
     }
@@ -81,8 +81,8 @@ public class MemoCommandServiceImpl implements MemoCommandService {
                 .map(tagMemo -> tagMemo.getTag().getName())
                 .toList();
 
-        tagModuleService.addNewTagMemo(requestedTagMemoList, currentTagMemoNames, memo);
-        tagModuleService.removeOldTagMemo(requestedTagMemoList, currentTagMemoList);
+        tagCommandModuleService.addNewTagMemo(requestedTagMemoList, currentTagMemoNames, memo);
+        tagCommandModuleService.removeOldTagMemo(requestedTagMemoList, currentTagMemoList);
     }
 
     private void updateContent(final String content, final Memo memo) {

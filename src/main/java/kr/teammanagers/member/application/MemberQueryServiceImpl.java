@@ -12,7 +12,7 @@ import kr.teammanagers.member.repository.CommentRepository;
 import kr.teammanagers.member.repository.MemberRepository;
 import kr.teammanagers.storage.domain.TeamData;
 import kr.teammanagers.storage.repository.TeamDataRepository;
-import kr.teammanagers.tag.application.TagModuleService;
+import kr.teammanagers.tag.application.module.TagQueryModuleService;
 import kr.teammanagers.tag.domain.Tag;
 import kr.teammanagers.tag.domain.TagTeam;
 import kr.teammanagers.tag.repository.TagTeamRepository;
@@ -38,7 +38,7 @@ public class MemberQueryServiceImpl implements MemberQueryService {
     private final TeamManageRepository teamManageRepository;
     private final TeamRepository teamRepository;
 
-    private final TagModuleService tagModuleService;
+    private final TagQueryModuleService tagQueryModuleService;
     private final AmazonConfig amazonConfig;
     private final AmazonS3Provider amazonS3Provider;
     private final TagTeamRepository tagTeamRepository;
@@ -46,7 +46,7 @@ public class MemberQueryServiceImpl implements MemberQueryService {
     @Override
     public GetProfile getProfile(final Long authId) {
         Member member = memberRepository.findById(authId).orElseThrow(RuntimeException::new);       // TODO : 예외 처리 필요
-        List<Tag> tagList = tagModuleService.getAllConfidentRole(authId);
+        List<Tag> tagList = tagQueryModuleService.getAllConfidentRole(authId);
         List<Comment> commentList = commentRepository.findAllByMemberId(authId);
         String imageUrl = amazonS3Provider.generateUrl(amazonConfig.getMemberProfilePath(), member.getId());
         return GetProfile.of(member, tagList, commentList, imageUrl);
@@ -69,7 +69,7 @@ public class MemberQueryServiceImpl implements MemberQueryService {
                 .map(TeamManage::getMember)
                 .toList();
 
-        List<Tag> teamRoleList = tagModuleService.getAllTeamRoleTag(
+        List<Tag> teamRoleList = tagQueryModuleService.getAllTeamRoleTag(
                 teamManageList.stream()
                         .filter(teamManage -> teamManage.getId().equals(authId))
                         .findFirst()
@@ -80,7 +80,7 @@ public class MemberQueryServiceImpl implements MemberQueryService {
                 .flatMap(teamManage -> teamDataRepository.findAllByTeamManageId(teamManage.getId()).stream())
                 .toList();
 
-        return GetPortfolio.of(team, tagModuleService.getAllTeamTag(teamId), memberList, teamRoleList, teamDataList);
+        return GetPortfolio.of(team, tagQueryModuleService.getAllTeamTag(teamId), memberList, teamRoleList, teamDataList);
     }
 
     @Override

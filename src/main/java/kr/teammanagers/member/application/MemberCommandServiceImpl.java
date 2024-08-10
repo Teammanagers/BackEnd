@@ -7,7 +7,7 @@ import kr.teammanagers.member.domain.Member;
 import kr.teammanagers.member.dto.request.UpdateProfile;
 import kr.teammanagers.member.repository.CommentRepository;
 import kr.teammanagers.member.repository.MemberRepository;
-import kr.teammanagers.tag.application.TagModuleService;
+import kr.teammanagers.tag.application.module.TagCommandModuleService;
 import kr.teammanagers.tag.domain.ConfidentRole;
 import kr.teammanagers.tag.repository.ConfidentRoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     private final CommentRepository commentRepository;
     private final ConfidentRoleRepository confidentRoleRepository;
 
-    private final TagModuleService tagModuleService;
+    private final TagCommandModuleService tagCommandModuleService;
     private final AmazonConfig amazonConfig;
     private final AmazonS3Provider amazonS3Provider;
 
@@ -69,8 +69,8 @@ public class MemberCommandServiceImpl implements MemberCommandService {
                 .map(role -> role.getTag().getName())
                 .toList();
 
-        tagModuleService.addNewConfidentRoles(requestedRoles, currentRoleNames, member);
-        tagModuleService.removeOldConfidentRoles(requestedRoles, currentRoles);
+        tagCommandModuleService.addNewConfidentRoles(requestedRoles, currentRoleNames, member);
+        tagCommandModuleService.removeOldConfidentRoles(requestedRoles, currentRoles);
     }
 
     private void updateProfileImageIfPresent(final MultipartFile imageFile, final Member member) {
