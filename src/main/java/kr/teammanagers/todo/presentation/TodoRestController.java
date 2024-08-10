@@ -58,7 +58,7 @@ public class TodoRestController {
 
     @DeleteMapping("/todo/{todoId}")
     public ApiPayload<Void> delete(@AuthenticationPrincipal final PrincipalDetails auth,
-                                   @PathVariable(name = "todoId") Long todoId) {
+                                   @PathVariable(name = "todoId") final Long todoId) {
 
         todoCommandService.deleteTodo(todoId);
 
