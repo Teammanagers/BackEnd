@@ -29,4 +29,6 @@ public class FeedbackQueryServiceImpl implements FeedbackQueryService {
         List<Feedback> feedbackList = feedbackRepository.findAllByTeamDataId(storageId);
         return FeedbackDto.fromList(feedbackList);
     }
+
+
 }

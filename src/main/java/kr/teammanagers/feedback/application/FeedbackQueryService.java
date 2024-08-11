@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface FeedbackQueryService {
     List<FeedbackDto> getFeedbacksByTeamData(Long storageId, Member member);
+
 }
