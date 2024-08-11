@@ -34,7 +34,6 @@ public class AmazonS3Provider {
         } catch (IOException e) {
             log.error(AmazonConstant.FILE_UPLOAD_ERROR + ": {}", (Object) e.getStackTrace());
         }
-        return amazonS3.getUrl(amazonConfig.getBucket(), keyName + ext).toString();
     }
 
     public String generateUrl(final String filePath, final Long id) {
