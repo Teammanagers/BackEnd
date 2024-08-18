@@ -18,7 +18,23 @@ public class TodoModuleServiceImpl implements TodoModuleService {
     private final TodoRepository todoRepository;
 
     @Override
+    public Todo getTodoById(Long id) {
+        return todoRepository.findById(id)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TODO_NOT_FOUND));
+    }
+
+    @Override
     public List<Todo> getTodoListByTeamManageId(Long teamManageId) {
         return todoRepository.findAllByTeamManageId(teamManageId);
+    }
+
+    @Override
+    public void saveTodo(Todo todo) {
+        todoRepository.save(todo);
+    }
+
+    @Override
+    public void deleteTodoById(Long id) {
+        todoRepository.deleteById(id);
     }
 }
