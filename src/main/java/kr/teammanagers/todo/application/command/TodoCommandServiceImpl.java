@@ -1,4 +1,4 @@
-package kr.teammanagers.todo.application;
+package kr.teammanagers.todo.application.command;
 
 import kr.teammanagers.common.payload.code.status.ErrorStatus;
 import kr.teammanagers.global.exception.GeneralException;

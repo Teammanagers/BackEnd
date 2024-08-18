@@ -1,4 +1,4 @@
-package kr.teammanagers.todo.application;
+package kr.teammanagers.todo.application.query;
 
 import kr.teammanagers.common.Status;
 import kr.teammanagers.common.payload.code.status.ErrorStatus;
@@ -6,6 +6,7 @@ import kr.teammanagers.global.exception.GeneralException;
 import kr.teammanagers.tag.dto.TagDto;
 import kr.teammanagers.tag.repository.TeamRoleRepository;
 import kr.teammanagers.team.repository.TeamManageRepository;
+import kr.teammanagers.todo.application.module.TodoModuleService;
 import kr.teammanagers.todo.dto.TodoDto;
 import kr.teammanagers.todo.dto.TodoListDto;
 import kr.teammanagers.todo.dto.response.GetTodoList;
@@ -21,16 +22,16 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class TodoQueryServiceImpl implements TodoQueryService {
 
-    private final TodoRepository todoRepository;
     private final TeamManageRepository teamManageRepository;
     private final TeamRoleRepository teamRoleRepository;
+    private final TodoModuleService todoModuleService;
 
     @Override
     public GetTodoList getTodoList(Long memberId, Long teamId) {
 
         List<TodoListDto> teamTodoListDtoList = teamManageRepository.findAllByTeamId(teamId).stream()
                 .map(teamManage -> {
-                    List<TodoDto> todoDtoList = todoRepository.findAllByTeamManage(teamManage).stream()
+                    List<TodoDto> todoDtoList = todoModuleService.getTodoListByTeamManageId(teamManage.getId()).stream()
                             .map(TodoDto::from).toList();
                     List<TagDto> tagDtoList = teamRoleRepository.findAllByTeamManageId(teamManage.getId()).stream()
                             .map(teamRole -> TagDto.from(teamRole.getTag())).toList();

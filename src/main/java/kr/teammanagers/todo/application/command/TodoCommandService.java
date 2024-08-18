@@ -1,4 +1,4 @@
-package kr.teammanagers.todo.application;
+package kr.teammanagers.todo.application.command;
 
 import kr.teammanagers.todo.dto.request.CreateTodo;
 import kr.teammanagers.todo.dto.request.UpdateTodo;
