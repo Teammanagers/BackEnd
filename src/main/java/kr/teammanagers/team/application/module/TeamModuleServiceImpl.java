@@ -22,7 +22,7 @@ public class TeamModuleServiceImpl implements TeamModuleService {
     private final TeamManageRepository teamManageRepository;
 
     @Override
-    public Team getTeamById(final Long id) {
+    public Team findById(final Long id) {
         return teamRepository.findById(id)
                 .orElseThrow(() -> new GeneralException(TEAM_NOT_FOUND));
     }
@@ -49,5 +49,8 @@ public class TeamModuleServiceImpl implements TeamModuleService {
         return teamManageRepository.findAllByTeamId(teamId);
     }
 
-
+    public Team findByTeamCode(final String teamCode) {
+        return teamRepository.findByTeamCode(teamCode)
+                .orElseThrow(() -> new GeneralException(TEAM_NOT_FOUND));
+    }
 }
