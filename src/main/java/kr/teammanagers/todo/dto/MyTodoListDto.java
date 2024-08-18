@@ -15,10 +15,10 @@ public record MyTodoListDto(
         List<TagDto> teamTagList,
         List<TodoDto> todoList
 ) {
-    public static MyTodoListDto of(final Team team, final Long teamId, final List<Tag> tagList, final List<Todo> todoList) {
+    public static MyTodoListDto of(final Team team, final List<Tag> tagList, final List<Todo> todoList) {
         return MyTodoListDto.builder()
                 .title(team.getTitle())
-                .teamId(teamId)
+                .teamId(team.getId())
                 .teamTagList(tagList.stream()
                         .map(TagDto::from)
                         .toList())

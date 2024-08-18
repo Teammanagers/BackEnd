@@ -58,7 +58,7 @@ public class MemberQueryServiceImpl implements MemberQueryService {
                     Team team = teamManage.getTeam();
                     List<Tag> teamRoleTagList = tagQueryModuleService.getAllTeamRoleTag(teamManage.getId());
                     List<Todo> todoList = todoRepository.findAllByTeamManage(teamManage);
-                    return MyTodoListDto.of(team, team.getId(), teamRoleTagList, todoList);
+                    return MyTodoListDto.of(team, teamRoleTagList, todoList);
                 })
                 .toList();
         return GetMyTodoList.from(myTodoListDtos);
