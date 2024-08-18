@@ -1,9 +1,10 @@
 package kr.teammanagers.todo.presentation;
 
+import jakarta.validation.Valid;
 import kr.teammanagers.auth.dto.PrincipalDetails;
 import kr.teammanagers.common.payload.code.ApiPayload;
-import kr.teammanagers.todo.application.TodoCommandService;
-import kr.teammanagers.todo.application.TodoQueryService;
+import kr.teammanagers.todo.application.command.TodoCommandService;
+import kr.teammanagers.todo.application.query.TodoQueryService;
 import kr.teammanagers.todo.dto.request.CreateTodo;
 import kr.teammanagers.todo.dto.request.UpdateTodo;
 import kr.teammanagers.todo.dto.response.GetTodoList;
@@ -19,12 +20,12 @@ public class TodoRestController {
     private final TodoCommandService todoCommandService;
     private final TodoQueryService todoQueryService;
 
-    @PostMapping("/team/{teamId}/todo")
+    @PostMapping("/team/{teamManageId}/todo")
     public ApiPayload<Void> create(@AuthenticationPrincipal final PrincipalDetails auth,
-                                   @RequestBody final CreateTodo request,
-                                   @PathVariable(name = "teamId") final Long teamId) {
+                                   @RequestBody @Valid final CreateTodo request,
+                                   @PathVariable(name = "teamManageId") final Long teamManageId) {
 
-        todoCommandService.createTodo(request, auth.member().getId(), teamId);
+        todoCommandService.createTodo(request, teamManageId);
         return ApiPayload.onSuccess();
     }
 
@@ -32,14 +33,14 @@ public class TodoRestController {
     public ApiPayload<GetTodoList> get(@AuthenticationPrincipal final PrincipalDetails auth,
                                        @PathVariable(name = "teamId") final Long teamId) {
 
-        GetTodoList getTodoList = todoQueryService.getTodoList(teamId);
+        GetTodoList getTodoList = todoQueryService.getTodoList(auth.member().getId(), teamId);
 
         return ApiPayload.onSuccess(getTodoList);
     }
 
     @PatchMapping("/todo/{todoId}")
     public ApiPayload<Void> updateTitle(@AuthenticationPrincipal final PrincipalDetails auth,
-                                        @RequestBody final UpdateTodo request,
+                                        @RequestBody @Valid final UpdateTodo request,
                                         @PathVariable(name = "todoId") final Long todoId) {
 
         todoCommandService.updateTodoTitle(request, todoId);

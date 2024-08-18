@@ -1,11 +1,13 @@
 package kr.teammanagers.memo.presentation;
 
+import jakarta.validation.Valid;
 import kr.teammanagers.auth.dto.PrincipalDetails;
 import kr.teammanagers.common.payload.code.ApiPayload;
-import kr.teammanagers.memo.application.MemoCommandService;
-import kr.teammanagers.memo.application.MemoQueryService;
+import kr.teammanagers.memo.application.command.MemoCommandService;
+import kr.teammanagers.memo.application.query.MemoQueryService;
 import kr.teammanagers.memo.dto.request.CreateMemo;
 import kr.teammanagers.memo.dto.request.UpdateMemo;
+import kr.teammanagers.memo.dto.response.GetMemo;
 import kr.teammanagers.memo.dto.response.GetMemoList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,14 +25,14 @@ public class MemoController {
     public ApiPayload<Void> create(
             @AuthenticationPrincipal final PrincipalDetails auth,
             @PathVariable("teamId") final Long teamId,
-            @RequestBody final CreateMemo createMemo
+            @RequestBody @Valid final CreateMemo createMemo
     ) {
         memoCommandService.createMemo(teamId, createMemo);
         return ApiPayload.onSuccess();
     }
 
     @GetMapping("/team/{teamId}/memo")
-    public ApiPayload<GetMemoList> get(
+    public ApiPayload<GetMemoList> getList(
             @AuthenticationPrincipal final PrincipalDetails auth,
             @PathVariable("teamId") final Long teamId
     ) {
@@ -38,11 +40,20 @@ public class MemoController {
         return ApiPayload.onSuccess(result);
     }
 
+    @GetMapping("/memo/{memoId}")
+    public ApiPayload<GetMemo> get(
+            @AuthenticationPrincipal final PrincipalDetails auth,
+            @PathVariable("memoId") final Long memoId
+    ) {
+        GetMemo result = memoQueryService.getMemo(memoId);
+        return ApiPayload.onSuccess(result);
+    }
+
     @PatchMapping("/memo/{memoId}")
     public ApiPayload<Void> update(
             @AuthenticationPrincipal final PrincipalDetails auth,
             @PathVariable("memoId") final Long memoId,
-            @RequestBody final UpdateMemo updateMemo
+            @RequestBody @Valid final UpdateMemo updateMemo
     ) {
         memoCommandService.updateMemo(memoId, updateMemo);
         return ApiPayload.onSuccess();
