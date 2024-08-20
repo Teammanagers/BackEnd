@@ -1,4 +1,4 @@
-package kr.teammanagers.schedule.application;
+package kr.teammanagers.schedule.application.command;
 
 import kr.teammanagers.schedule.dto.request.CreateSchedule;
 import kr.teammanagers.schedule.dto.request.UpdateSchedule;
