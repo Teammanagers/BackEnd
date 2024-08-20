@@ -105,6 +105,15 @@ public class TeamController {
         return ApiPayload.onSuccess(result);
     }
 
+    @DeleteMapping("/team/{teamId}/member")
+    public ApiPayload<Void> exitTeam(
+            @AuthenticationPrincipal final PrincipalDetails auth,
+            @PathVariable("teamId") final Long teamId
+    ) {
+        teamCommandService.exitTeam(auth.member().getId(), teamId);
+        return ApiPayload.onSuccess();
+    }
+
     @PostMapping("/team/comment")
     public ApiPayload<Void> createComment(
             @AuthenticationPrincipal final PrincipalDetails auth,
