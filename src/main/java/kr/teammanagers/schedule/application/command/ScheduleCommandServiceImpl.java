@@ -51,8 +51,8 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService{
     }
 
     @Override
-    public void delete(Long memberId, Long teamId) {
-        TeamManage teamManage = teamModuleService.getTeamManageByMemberIdAndTeamId(memberId, teamId);
+    public void delete(Long teamManageId) {
+        TeamManage teamManage = teamModuleService.getTeamManageById(teamManageId);
 
         scheduleModuleService.deleteScheduleByTeamManageId(teamManage.getId());
     }
