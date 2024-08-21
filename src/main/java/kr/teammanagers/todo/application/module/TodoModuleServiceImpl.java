@@ -6,12 +6,10 @@ import kr.teammanagers.todo.domain.Todo;
 import kr.teammanagers.todo.repository.TodoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class TodoModuleServiceImpl implements TodoModuleService {
 

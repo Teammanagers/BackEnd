@@ -5,12 +5,10 @@ import kr.teammanagers.auth.dto.PrincipalDetails;
 import kr.teammanagers.common.payload.code.ApiPayload;
 import kr.teammanagers.team.application.command.TeamCommandService;
 import kr.teammanagers.team.application.query.TeamQueryService;
-import kr.teammanagers.team.dto.request.CreateTeam;
-import kr.teammanagers.team.dto.request.CreateTeamComment;
-import kr.teammanagers.team.dto.request.CreateTeamPassword;
-import kr.teammanagers.team.dto.request.ValidatePassword;
+import kr.teammanagers.team.dto.request.*;
 import kr.teammanagers.team.dto.response.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -72,12 +70,30 @@ public class TeamController {
     }
 
     @GetMapping("/team/{teamId}/member")
-    public ApiPayload<GetTeamMember> getTeamMember(
+    public ApiPayload<GetSimpleTeamMember> getTeamMember(
             @AuthenticationPrincipal final PrincipalDetails auth,
+            @PathVariable("teamId") final Long teamId
+    ) {
+        GetSimpleTeamMember result = teamQueryService.getSimpleTeamMember(teamId);
+        return ApiPayload.onSuccess(result);
+    }
+
+    @GetMapping("/team/{teamId}/member/detail")
+    public ApiPayload<GetTeamMember> getTeamMemberDetail(
             @PathVariable("teamId") final Long teamId
     ) {
         GetTeamMember result = teamQueryService.getTeamMember(teamId);
         return ApiPayload.onSuccess(result);
+    }
+
+    @PatchMapping(value = "/team/{teamId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiPayload<Void> updateTeam(
+            @PathVariable("teamId") final Long teamId,
+            @RequestPart(name = "updateProfile") final UpdateTeam updateTeam,
+            @RequestPart(name = "imageFile", required = false) final MultipartFile imageFile
+    ) {
+        teamCommandService.updateTeam(teamId, updateTeam, imageFile);
+        return ApiPayload.onSuccess();
     }
 
     @PatchMapping("/team/{teamId}/state")
@@ -87,6 +103,15 @@ public class TeamController {
     ) {
         UpdateTeamEndResult result = teamCommandService.updateTeamState(auth.member().getId(), teamId);
         return ApiPayload.onSuccess(result);
+    }
+
+    @DeleteMapping("/team/{teamId}/member")
+    public ApiPayload<Void> exitTeam(
+            @AuthenticationPrincipal final PrincipalDetails auth,
+            @PathVariable("teamId") final Long teamId
+    ) {
+        teamCommandService.exitTeam(auth.member().getId(), teamId);
+        return ApiPayload.onSuccess();
     }
 
     @PostMapping("/team/comment")

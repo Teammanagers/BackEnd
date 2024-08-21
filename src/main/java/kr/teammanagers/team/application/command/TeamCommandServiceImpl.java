@@ -1,6 +1,7 @@
 package kr.teammanagers.team.application.command;
 
 import kr.teammanagers.common.Status;
+import kr.teammanagers.common.payload.code.status.ErrorStatus;
 import kr.teammanagers.global.config.AmazonConfig;
 import kr.teammanagers.global.exception.GeneralException;
 import kr.teammanagers.global.provider.AmazonS3Provider;
@@ -18,10 +19,7 @@ import kr.teammanagers.team.application.module.TeamModuleService;
 import kr.teammanagers.team.domain.Team;
 import kr.teammanagers.team.domain.TeamManage;
 import kr.teammanagers.team.dto.TeamMemberDto;
-import kr.teammanagers.team.dto.request.CreateTeam;
-import kr.teammanagers.team.dto.request.CreateTeamComment;
-import kr.teammanagers.team.dto.request.CreateTeamPassword;
-import kr.teammanagers.team.dto.request.ValidatePassword;
+import kr.teammanagers.team.dto.request.*;
 import kr.teammanagers.team.dto.response.CreateTeamResult;
 import kr.teammanagers.team.dto.response.UpdateTeamEndResult;
 import kr.teammanagers.team.repository.TeamManageRepository;
@@ -81,6 +79,35 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     }
 
     @Override
+    public void updateTeam(final Long teamId, final UpdateTeam request, final MultipartFile imageFile) {
+        Team team = teamModuleService.findById(teamId);
+
+        updateTeamTitle(request.title(), team);
+        updateProfileImageIfPresent(imageFile, team);
+    }
+
+    private void updateProfileImageIfPresent(final MultipartFile imageFile, final Team team) {
+        if (imageFile != null && !imageFile.isEmpty()) {
+            updateProfileImage(imageFile, team);
+        }
+    }
+
+    private void updateProfileImage(final MultipartFile imageFile, final Team team) {
+        String teamProfilePath = amazonConfig.getTeamProfilePath();
+        if (amazonS3Provider.isFileExist(teamProfilePath, team.getId())) {
+            amazonS3Provider.deleteFile(teamProfilePath, team.getId());
+        }
+        amazonS3Provider.uploadImage(teamProfilePath, team.getId(), imageFile);
+    }
+
+    private void updateTeamTitle(final String title, final Team team) {
+        if (title != null) {
+            team.updateTitle(title);
+        }
+    }
+
+
+    @Override
     public void createTeamPassword(final Long teamId, final CreateTeamPassword request) {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new GeneralException(TEAM_NOT_FOUND));
@@ -89,7 +116,7 @@ public class TeamCommandServiceImpl implements TeamCommandService {
 
     @Override
     public void joinTeam(final Member auth, final Long teamId, final ValidatePassword request) {
-        if (teamModuleService.findById(teamId).getPassword().equals(request.password())) {
+        if (!teamModuleService.findById(teamId).getPassword().equals(request.password())) {
             throw new GeneralException(TEAM_PASSWORD_NOT_FOUND);
         }
         if (teamManageRepository.existsByMemberIdAndTeamId(auth.getId(), teamId)) {
@@ -135,6 +162,17 @@ public class TeamCommandServiceImpl implements TeamCommandService {
                     comment.setMember(memberRepository.getReferenceById(memberId));
                     commentRepository.save(comment);
                 });
+    }
+
+    @Override
+    public void exitTeam(final Long authId, final Long teamId) {
+        TeamManage teamManage = teamManageRepository.findByMemberIdAndTeamId(authId, teamId)
+                .orElseThrow(() -> new GeneralException(TEAM_MANAGE_NOT_FOUND));
+        List<TeamRole> teamRoleList = teamRoleRepository.findAllByTeamManageId(teamManage.getId());
+        List<Tag> tagList = teamRoleList.stream().map(TeamRole::getTag).toList();
+        teamManageRepository.delete(teamManage);
+        teamRoleRepository.deleteAll(teamRoleList);
+        tagList.forEach(tag -> tagCommandModuleService.validateAndDeleteTagByTagId(tag.getId()));
     }
 
     private String encodeNumberToChars(final Long teamId) {

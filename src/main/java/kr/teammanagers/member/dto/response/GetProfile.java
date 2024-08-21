@@ -2,6 +2,7 @@ package kr.teammanagers.member.dto.response;
 
 import kr.teammanagers.member.domain.Comment;
 import kr.teammanagers.member.domain.Member;
+import kr.teammanagers.member.dto.SocialType;
 import kr.teammanagers.tag.domain.Tag;
 import kr.teammanagers.tag.dto.TagDto;
 import kr.teammanagers.team.dto.CommentDto;
@@ -13,7 +14,9 @@ import java.util.List;
 public record GetProfile(
         String imageUrl,
         String name,
+        String phoneNumber,
         String belong,
+        SocialType loginProcess,
         List<TagDto> confidentRole,
         List<CommentDto> commentList
 ) {
@@ -22,7 +25,9 @@ public record GetProfile(
         return GetProfile.builder()
                 .imageUrl(imageUrl)
                 .name(member.getName())
+                .phoneNumber(member.getPhoneNumber())
                 .belong(member.getBelong())
+                .loginProcess(member.judgeLoginProcess())
                 .confidentRole(
                         tagList.stream()
                                 .map(TagDto::from)
