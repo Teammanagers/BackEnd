@@ -77,4 +77,14 @@ public class TeamModuleServiceImpl implements TeamModuleService {
     public boolean existsByMemberIdAndTeamId(final Long memberId, final Long teamId) {
         return teamManageRepository.existsByMemberIdAndTeamId(memberId, teamId);
     }
+
+    @Override
+    public boolean existsTeamManageByMemberIdAndTeamId(final Long memberId, final Long teamId) {
+        return teamManageRepository.existsByMemberIdAndTeamId(memberId, teamId);
+    }
+
+    @Override
+    public Long countTeamManageByTeamId(final Long teamId) {
+        return teamManageRepository.countByTeamId(teamId);
+    }
 }

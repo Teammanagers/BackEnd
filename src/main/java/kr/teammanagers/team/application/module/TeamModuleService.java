@@ -19,4 +19,8 @@ public interface TeamModuleService {
     Team findTeamByTeamCode(String teamCode);
 
     boolean existsByMemberIdAndTeamId(Long id, Long teamId);
+
+    boolean existsTeamManageByMemberIdAndTeamId(Long memberId, Long teamId);
+
+    Long countTeamManageByTeamId(Long teamId);
 }
