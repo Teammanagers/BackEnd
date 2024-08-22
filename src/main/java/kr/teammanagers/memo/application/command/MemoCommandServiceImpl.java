@@ -25,7 +25,7 @@ public class MemoCommandServiceImpl implements MemoCommandService {
 
     @Override
     public void createMemo(final Long teamId, final CreateMemo request) {
-        Team team = teamModuleService.findById(teamId);
+        Team team = teamModuleService.findById(teamId, Team.class);
         Memo memo = request.toMemo();
         memo.setTeam(team);
         memoModuleService.save(memo);
@@ -33,11 +33,12 @@ public class MemoCommandServiceImpl implements MemoCommandService {
         request.tagList().stream()
                 .map(tagModuleService::findOrCreateTag)
                 .forEach(tag -> {
-                    tagModuleService.saveTagMemo(
+                    tagModuleService.save(
                             TagMemo.builder()
                                     .tag(tag)
                                     .memo(memo)
-                                    .build()
+                                    .build(),
+                            TagMemo.class
                     );
                 });
     }
