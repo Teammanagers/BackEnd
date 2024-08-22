@@ -59,7 +59,7 @@ public class Schedule extends AuditingField {
 
     // Mapping
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_manage_id")
     private TeamManage teamManage;
 
