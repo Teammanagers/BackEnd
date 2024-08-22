@@ -1,5 +1,7 @@
 package kr.teammanagers.team.application.command;
 
+import kr.teammanagers.alarm.application.module.AlarmModuleService;
+import kr.teammanagers.calendar.application.module.CalendarModuleService;
 import kr.teammanagers.common.Status;
 import kr.teammanagers.global.config.AmazonConfig;
 import kr.teammanagers.global.exception.GeneralException;
@@ -7,13 +9,11 @@ import kr.teammanagers.global.provider.AmazonS3Provider;
 import kr.teammanagers.member.application.module.MemberModuleService;
 import kr.teammanagers.member.domain.Comment;
 import kr.teammanagers.member.domain.Member;
-import kr.teammanagers.member.repository.CommentRepository;
+import kr.teammanagers.schedule.application.module.ScheduleModuleService;
 import kr.teammanagers.tag.application.module.TagModuleService;
 import kr.teammanagers.tag.domain.Tag;
 import kr.teammanagers.tag.domain.TagTeam;
 import kr.teammanagers.tag.domain.TeamRole;
-import kr.teammanagers.tag.repository.TagTeamRepository;
-import kr.teammanagers.tag.repository.TeamRoleRepository;
 import kr.teammanagers.team.application.module.TeamModuleService;
 import kr.teammanagers.team.domain.Team;
 import kr.teammanagers.team.domain.TeamManage;
@@ -21,6 +21,7 @@ import kr.teammanagers.team.dto.TeamMemberDto;
 import kr.teammanagers.team.dto.request.*;
 import kr.teammanagers.team.dto.response.CreateTeamResult;
 import kr.teammanagers.team.dto.response.UpdateTeamEndResult;
+import kr.teammanagers.todo.application.module.TodoModuleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,15 +38,16 @@ import static kr.teammanagers.team.constant.TeamConstant.*;
 @RequiredArgsConstructor
 public class TeamCommandServiceImpl implements TeamCommandService {
 
-    private final TagTeamRepository tagTeamRepository;
-    private final TeamRoleRepository teamRoleRepository;
-    private final CommentRepository commentRepository;
-
     private final MemberModuleService memberModuleService;
-    private final TeamModuleService teamModuleService;
     private final TagModuleService tagModuleService;
-    private final AmazonS3Provider amazonS3Provider;
+    private final TeamModuleService teamModuleService;
+    private final ScheduleModuleService scheduleModuleService;
+    private final TodoModuleService todoModuleService;
+    private final AlarmModuleService alarmModuleService;
+    private final CalendarModuleService calendarModuleService;
+
     private final AmazonConfig amazonConfig;
+    private final AmazonS3Provider amazonS3Provider;
 
     @Override
     public CreateTeamResult createTeam(final Long authId, final CreateTeam request, final MultipartFile imageFile) {
@@ -58,11 +60,12 @@ public class TeamCommandServiceImpl implements TeamCommandService {
 
         request.teamTagList().stream()
                 .map(tagModuleService::findOrCreateTag)
-                .forEach(tag -> tagTeamRepository.save(
+                .forEach(tag -> tagModuleService.save(
                         TagTeam.builder()
                                 .tag(tag)
                                 .team(team)
-                                .build()
+                                .build(),
+                        TagTeam.class
                 ));
 
         TeamManage admin = TeamManage.builder()
@@ -102,7 +105,6 @@ public class TeamCommandServiceImpl implements TeamCommandService {
         }
     }
 
-
     @Override
     public void createTeamPassword(final Long teamId, final CreateTeamPassword request) {
         Team team = teamModuleService.findById(teamId, Team.class);
@@ -134,7 +136,7 @@ public class TeamCommandServiceImpl implements TeamCommandService {
         List<TeamMemberDto> teamMemberList = teamModuleService.findTeamManageAllByTeamId(teamId).stream()
                 .filter(teamManage -> !teamManage.getMember().getId().equals(authId))
                 .map(teamManage -> {
-                    List<Tag> tagList = teamRoleRepository.findAllByTeamManageId(teamManage.getId()).stream()
+                    List<Tag> tagList = tagModuleService.findAllTeamRoleByTeamManageId(teamManage.getId()).stream()
                             .map(TeamRole::getTag).toList();
                     return TeamMemberDto.of(teamManage, tagList,
                             amazonS3Provider.generateUrl(amazonConfig.getMemberProfilePath(), teamManage.getMember().getId()));
@@ -154,17 +156,21 @@ public class TeamCommandServiceImpl implements TeamCommandService {
                             .isHidden(false)
                             .build();
                     comment.setMember(memberModuleService.findMemberById(memberId));
-                    commentRepository.save(comment);
+                    memberModuleService.save(comment, Comment.class);
                 });
     }
 
     @Override
     public void exitTeam(final Long authId, final Long teamId) {
         TeamManage teamManage = teamModuleService.findTeamManageByMemberIdAndTeamId(authId, teamId);
-        List<TeamRole> teamRoleList = teamRoleRepository.findAllByTeamManageId(teamManage.getId());
+        List<TeamRole> teamRoleList = tagModuleService.findAllTeamRoleByTeamManageId(teamManage.getId());
         List<Tag> tagList = teamRoleList.stream().map(TeamRole::getTag).toList();
         teamModuleService.delete(teamManage, TeamManage.class);
-        teamRoleRepository.deleteAll(teamRoleList);
+        alarmModuleService.deleteAllByTeamManageId(teamManage.getId());
+        calendarModuleService.deleteAllTeamCalendarByTeamManageId(teamManage.getId());
+        scheduleModuleService.deleteScheduleByTeamManageId(teamManage.getId());
+        todoModuleService.deleteAllByTeamManageId(teamManage.getId());
+        tagModuleService.deleteAllTeamRole(teamRoleList);
         tagList.forEach(tag -> tagModuleService.validateAndDeleteTagByTagId(tag.getId()));
     }
 
