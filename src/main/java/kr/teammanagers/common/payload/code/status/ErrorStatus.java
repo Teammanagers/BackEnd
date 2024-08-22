@@ -51,6 +51,12 @@ public enum ErrorStatus implements ErrorBaseCode {
     TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "TAG404", "존재하지 않는 태그입니다."),
     TAG_TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "TAG4041", "존재하지 않는 팀 태그입니다."),
     TAG_ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "TAG4042", "존재하지 않는 역할 태그입니다."),
+
+    // 스토리지 관련 응답
+    TEAM_DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "STORAGE404", "존재하지 않는 팀데이터 입니다."),
+
+    // 피드백 관련 응답
+    FEEDBACK_NOT_FOUND(HttpStatus.NOT_FOUND, "FEEDBACK404", "존재하지 않는 피드백입니다."),
     ;
 
     private final HttpStatus httpStatus;
