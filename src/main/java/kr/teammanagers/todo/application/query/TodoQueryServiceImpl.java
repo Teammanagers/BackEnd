@@ -26,7 +26,7 @@ public class TodoQueryServiceImpl implements TodoQueryService {
     @Override
     public GetTodoList getTodoList(Long memberId, Long teamId) {
 
-        List<TodoListDto> teamTodoListDtoList = teamModuleService.getTeamManageListByTeamId(teamId).stream()
+        List<TodoListDto> teamTodoListDtoList = teamModuleService.findTeamManageAllByTeamId(teamId).stream()
                 .map(teamManage -> {
                     List<TodoDto> todoDtoList = todoModuleService.getTodoListByTeamManageId(teamManage.getId()).stream()
                             .map(TodoDto::from).toList();
@@ -47,7 +47,7 @@ public class TodoQueryServiceImpl implements TodoQueryService {
                     / flatTeamTodoDtoList.size();
         }
 
-        Long ownerTeamManageId = teamModuleService.getTeamManageByMemberIdAndTeamId(memberId, teamId).getId();
+        Long ownerTeamManageId = teamModuleService.findTeamManageByMemberIdAndTeamId(memberId, teamId).getId();
 
         return GetTodoList.of(ownerTeamManageId, teamTodoListDtoList, progress);
     }
