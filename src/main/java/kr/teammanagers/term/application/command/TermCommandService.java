@@ -1,4 +1,4 @@
-package kr.teammanagers.term.application;
+package kr.teammanagers.term.application.command;
 
 import kr.teammanagers.term.dto.CreateTerms;
 
