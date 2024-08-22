@@ -90,6 +90,7 @@ cloud:
 url:
   be: ${BE_URL}
   fe: ${FE_URL}
+  redirect: ${SUCCESS_REDIRECT_URL}
 
 ---
 ### Local Config

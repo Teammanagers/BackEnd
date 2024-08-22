@@ -3,9 +3,11 @@ package kr.teammanagers.auth.handler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.teammanagers.auth.constant.AuthConstant;
 import kr.teammanagers.auth.dto.PrincipalDetails;
 import kr.teammanagers.global.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -13,12 +15,18 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 
+import static kr.teammanagers.auth.constant.AuthConstant.ACCESS_TOKEN_CONSTANT;
+import static kr.teammanagers.auth.constant.AuthConstant.IS_NEW_USER_CONSTANT;
 
-@RequiredArgsConstructor
+
 @Component
+@RequiredArgsConstructor
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final TokenProvider tokenProvider;
+
+    @Value("${url.redirect}")
+    private String redirectUrl;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -27,13 +35,11 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String accessToken = tokenProvider.generateAccessToken(authentication);
         tokenProvider.generateRefreshToken(authentication, accessToken);
 
-        String redirectUrl = "http://localhost:5173" + "/login";
-
-        redirectUrl = UriComponentsBuilder.fromUriString(redirectUrl)
-                .queryParam("accessToken", accessToken)
-                .queryParam("isNewUser",principalDetails.isNewUser())
-                .build().toUriString();
-
-        response.sendRedirect(redirectUrl);
+        response.sendRedirect(
+                UriComponentsBuilder.fromUriString(redirectUrl)
+                        .queryParam(ACCESS_TOKEN_CONSTANT, accessToken)
+                        .queryParam(IS_NEW_USER_CONSTANT, principalDetails.isNewUser())
+                        .build().toUriString()
+        );
     }
 }
