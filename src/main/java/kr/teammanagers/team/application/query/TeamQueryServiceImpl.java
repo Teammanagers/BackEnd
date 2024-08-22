@@ -39,7 +39,7 @@ public class TeamQueryServiceImpl implements TeamQueryService {
 
     @Override
     public GetTeam getTeamById(final Long teamId) {
-        Team team = teamModuleService.findById(teamId);
+        Team team = teamModuleService.findById(teamId, Team.class);
         List<Tag> tagList = tagTeamRepository.findAllByTeamId(team.getId()).stream()
                 .map(TagTeam::getTag).toList();
         return GetTeam.from(team, tagList,
@@ -48,7 +48,7 @@ public class TeamQueryServiceImpl implements TeamQueryService {
 
     @Override
     public GetTeam getTeamByTeamCode(final String teamCode) {
-        Team team = teamModuleService.findByTeamCode(teamCode);
+        Team team = teamModuleService.findTeamByTeamCode(teamCode);
 
         List<Tag> tagList = tagTeamRepository.findAllByTeamId(team.getId()).stream()
                 .map(TagTeam::getTag).toList();
