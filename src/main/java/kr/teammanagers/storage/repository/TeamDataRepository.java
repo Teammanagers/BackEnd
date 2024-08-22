@@ -8,6 +8,4 @@ import java.util.List;
 public interface TeamDataRepository extends JpaRepository<TeamData, Long> {
 
     List<TeamData> findAllByTeamManageId(Long teamManageId);
-
-    List<TeamData> findAllByTeamId(Long teamId);
 }

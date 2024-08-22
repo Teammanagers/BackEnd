@@ -22,8 +22,8 @@ public class StorageModuleServiceImpl implements StorageModuleService {
     }
 
     @Override
-    public List<TeamData> findAllByTeamId(final Long teamId) {
-        return teamDataRepository.findAllByTeamId(teamId);
+    public List<TeamData> findAllByTeamManageId(final Long teamManageId) {
+        return teamDataRepository.findAllByTeamManageId(teamManageId);
     }
 
     @Override

@@ -39,7 +39,10 @@ public class StorageQueryServiceImpl implements StorageQueryService {
         if (!teamModuleService.existsTeamManageByMemberIdAndTeamId(member.getId(), teamId)) {
             throw new GeneralException(TEAM_MANAGE_NOT_FOUND);
         }
-        List<TeamData> teamDataList = storageModuleService.findAllByTeamId(teamId);
+        List<TeamData> teamDataList = teamModuleService.findTeamManageAllByTeamId(teamId).stream()
+                .map(teamManage -> storageModuleService.findAllByTeamManageId(teamManage.getId()))
+                .flatMap(List::stream)
+                .toList();
 
         return teamDataList.stream()
                 .map(StorageDto::from)

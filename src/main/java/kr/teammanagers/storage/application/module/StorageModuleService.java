@@ -7,7 +7,7 @@ import java.util.List;
 public interface StorageModuleService {
     TeamData save(TeamData teamData);
 
-    List<TeamData> findAllByTeamId(Long teamId);
+    List<TeamData> findAllByTeamManageId(Long teamManageId);
 
     TeamData findById(Long teamDataId);
 
