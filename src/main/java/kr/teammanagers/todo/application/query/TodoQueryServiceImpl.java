@@ -1,8 +1,8 @@
 package kr.teammanagers.todo.application.query;
 
 import kr.teammanagers.common.Status;
+import kr.teammanagers.tag.application.module.TagModuleService;
 import kr.teammanagers.tag.dto.TagDto;
-import kr.teammanagers.tag.repository.TeamRoleRepository;
 import kr.teammanagers.team.application.module.TeamModuleService;
 import kr.teammanagers.todo.application.module.TodoModuleService;
 import kr.teammanagers.todo.dto.TodoDto;
@@ -19,9 +19,9 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class TodoQueryServiceImpl implements TodoQueryService {
 
-    private final TeamRoleRepository teamRoleRepository;
     private final TodoModuleService todoModuleService;
     private final TeamModuleService teamModuleService;
+    private final TagModuleService tagModuleService;
 
     @Override
     public GetTodoList getTodoList(Long memberId, Long teamId) {
@@ -30,7 +30,7 @@ public class TodoQueryServiceImpl implements TodoQueryService {
                 .map(teamManage -> {
                     List<TodoDto> todoDtoList = todoModuleService.getTodoListByTeamManageId(teamManage.getId()).stream()
                             .map(TodoDto::from).toList();
-                    List<TagDto> tagDtoList = teamRoleRepository.findAllByTeamManageId(teamManage.getId()).stream()
+                    List<TagDto> tagDtoList = tagModuleService.findAllTeamRoleByTeamManageId(teamManage.getId()).stream()
                             .map(teamRole -> TagDto.from(teamRole.getTag())).toList();
                     return TodoListDto.of(teamManage, tagDtoList, todoDtoList);
                 }).toList();
