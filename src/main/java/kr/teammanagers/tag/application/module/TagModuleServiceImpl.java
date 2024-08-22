@@ -62,6 +62,11 @@ public class TagModuleServiceImpl implements TagModuleService {
     }
 
     @Override
+    public List<TeamRole> findAllTeamRoleByTeamManageId(final Long teamManageId) {
+        return teamRoleRepository.findAllByTeamManageId(teamManageId);
+    }
+
+    @Override
     public List<TagMemo> findAllTagMemoByMemoId(final Long memoId) {
         return tagMemoRepository.findAllByMemoId(memoId);
     }
@@ -87,6 +92,11 @@ public class TagModuleServiceImpl implements TagModuleService {
     @Override
     public void deleteTagMemo(final TagMemo tagMemo) {
         tagMemoRepository.delete(tagMemo);
+    }
+
+    @Override
+    public void deleteAllTeamRole(final List<TeamRole> teamRoleList) {
+        teamRoleRepository.deleteAll(teamRoleList);
     }
 
     @Override

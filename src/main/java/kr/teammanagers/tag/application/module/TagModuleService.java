@@ -15,6 +15,8 @@ public interface TagModuleService {
 
     List<ConfidentRole> findAllConfidentRoleByMemberId(Long memberId);
 
+    List<TeamRole> findAllTeamRoleByTeamManageId(Long teamManageId);
+
     List<TagMemo> findAllTagMemoByMemoId(Long memoId);
 
     <T> void delete(T entity, Class<T> clazz);
@@ -22,6 +24,8 @@ public interface TagModuleService {
     void deleteTagTeam(TagTeam tagTeam);
 
     void deleteTagMemo(TagMemo tagMemo);
+
+    void deleteAllTeamRole(List<TeamRole> teamRoleList);
 
     Tag findOrCreateTag(String tagName);
 

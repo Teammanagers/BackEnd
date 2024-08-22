@@ -7,8 +7,8 @@ import kr.teammanagers.tag.domain.TeamRole;
 import kr.teammanagers.tag.request.CreateRoleTag;
 import kr.teammanagers.tag.request.UpdateRoleTag;
 import kr.teammanagers.tag.request.UpdateTeamTag;
+import kr.teammanagers.team.application.module.TeamModuleService;
 import kr.teammanagers.team.domain.TeamManage;
-import kr.teammanagers.team.repository.TeamManageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TagCommandServiceImpl implements TagCommandService {
 
     private final TagModuleService tagModuleService;
-    private final TeamManageRepository teamManageRepository;
+    private final TeamModuleService teamModuleService;
 
     @Override
     public void updateTeamTag(final Long teamId, final Long tagId, final UpdateTeamTag request) {
@@ -42,9 +42,7 @@ public class TagCommandServiceImpl implements TagCommandService {
 
     @Override
     public void createRoleTag(final Long teamManageId, final CreateRoleTag request) {
-        TeamManage teamManage = teamManageRepository.findById(teamManageId)
-                .orElseThrow(RuntimeException::new);// TODO : 예외 처리 필요
-
+        TeamManage teamManage = teamModuleService.findById(teamManageId, TeamManage.class);
         Tag tag = tagModuleService.findOrCreateTag(request.name());
         tagModuleService.save(
                 TeamRole.builder()
