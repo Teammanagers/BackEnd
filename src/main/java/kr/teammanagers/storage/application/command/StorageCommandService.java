@@ -1,4 +1,4 @@
-package kr.teammanagers.storage.application;
+package kr.teammanagers.storage.application.command;
 
 import kr.teammanagers.member.domain.Member;
 import kr.teammanagers.storage.dto.request.CreateStorageRequest;

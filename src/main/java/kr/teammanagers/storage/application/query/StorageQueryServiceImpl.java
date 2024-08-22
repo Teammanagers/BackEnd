@@ -1,20 +1,15 @@
-package kr.teammanagers.storage.application;
+package kr.teammanagers.storage.application.query;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.teammanagers.global.config.AmazonConfig;
+import kr.teammanagers.global.exception.GeneralException;
 import kr.teammanagers.global.provider.AmazonS3ProviderV2;
 import kr.teammanagers.global.util.AmazonS3Helper;
 import kr.teammanagers.member.domain.Member;
-import kr.teammanagers.member.repository.MemberRepository;
-import kr.teammanagers.storage.domain.QTeamData;
+import kr.teammanagers.storage.application.module.StorageModuleService;
 import kr.teammanagers.storage.domain.TeamData;
 import kr.teammanagers.storage.dto.StorageDto;
-import kr.teammanagers.storage.repository.TeamDataRepository;
-import kr.teammanagers.team.domain.TeamManage;
-import kr.teammanagers.team.repository.TeamManageRepository;
+import kr.teammanagers.team.application.module.TeamModuleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +19,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static kr.teammanagers.common.payload.code.status.ErrorStatus.TEAM_MANAGE_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -32,29 +29,17 @@ public class StorageQueryServiceImpl implements StorageQueryService {
 
     private final AmazonS3ProviderV2 s3Provider;
     private final AmazonS3Helper s3Helper;
-    private final AmazonConfig s3config;
-    private final TeamDataRepository teamDataRepository;
-    private final MemberRepository memberRepository;
-    private final JPAQueryFactory queryFactory;
-    private final Tika tika = new Tika();
-    private final TeamManageRepository teamManageRepository;
+
+    private final TeamModuleService teamModuleService;
+    private final StorageModuleService storageModuleService;
 
     //파일 목록 get
     @Override
     public List<StorageDto> getFiles(Long teamId, Member member) {
-        QTeamData qTeamData = QTeamData.teamData;
-
-        TeamManage teamManage = teamManageRepository.findByMemberIdAndTeamId(member.getId(), teamId)
-                .orElseThrow(() -> new IllegalArgumentException("팀에 유저가 속해있지 않습니다."));
-
-
-        List<TeamData> teamDataList = queryFactory.selectFrom(qTeamData)
-                .where(qTeamData.teamManage.team.id.eq(teamId))
-                .fetch();
-
-        if (teamDataList.isEmpty()) {
-            log.info("No files found for team ID: " + teamId);
+        if (!teamModuleService.existsTeamManageByMemberIdAndTeamId(member.getId(), teamId)) {
+            throw new GeneralException(TEAM_MANAGE_NOT_FOUND);
         }
+        List<TeamData> teamDataList = storageModuleService.findAllByTeamId(teamId);
 
         return teamDataList.stream()
                 .map(StorageDto::from)
@@ -65,11 +50,10 @@ public class StorageQueryServiceImpl implements StorageQueryService {
     @Override
     public StorageDto downloadFile(Long teamId, Long storageId, Member member) {
 
-        TeamData teamData = teamDataRepository.findById(storageId)
-                .orElseThrow(() -> new IllegalArgumentException("파일이 존재하지 않습니다."));
-
-        TeamManage teamManage = teamManageRepository.findByMemberIdAndTeamId(member.getId(), teamId)
-                .orElseThrow(() -> new IllegalArgumentException("팀에 유저가 속해있지 않습니다."));
+        TeamData teamData = storageModuleService.findById(storageId);
+        if (!teamModuleService.existsTeamManageByMemberIdAndTeamId(member.getId(), teamId)) {
+            throw new GeneralException(TEAM_MANAGE_NOT_FOUND);
+        }
 
         if (!teamData.getTeamManage().getTeam().getId().equals(teamId)) {
             throw new IllegalArgumentException("File does not belong to the specified team");

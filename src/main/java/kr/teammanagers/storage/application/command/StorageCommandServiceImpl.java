@@ -1,26 +1,24 @@
-package kr.teammanagers.storage.application;
+package kr.teammanagers.storage.application.command;
 
 
+import kr.teammanagers.common.EntityStatus;
+import kr.teammanagers.common.payload.code.status.ErrorStatus;
+import kr.teammanagers.global.exception.GeneralException;
 import kr.teammanagers.global.provider.AmazonS3ProviderV2;
 import kr.teammanagers.member.domain.Member;
-import kr.teammanagers.member.repository.MemberRepository;
+import kr.teammanagers.storage.application.module.StorageModuleService;
 import kr.teammanagers.storage.domain.TeamData;
-import kr.teammanagers.common.EntityStatus;
 import kr.teammanagers.storage.dto.request.CreateStorageRequest;
 import kr.teammanagers.storage.dto.response.StorageResponse;
-import kr.teammanagers.storage.repository.TeamDataRepository;
+import kr.teammanagers.team.application.module.TeamModuleService;
 import kr.teammanagers.team.domain.TeamManage;
-import kr.teammanagers.team.repository.TeamManageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +27,8 @@ import java.util.Base64;
 public class StorageCommandServiceImpl implements StorageCommandService {
 
     private final AmazonS3ProviderV2 s3Provider;
-    private final TeamDataRepository teamDataRepository;
-    private final TeamManageRepository teamManageRepository;
-    private final MemberRepository memberRepository;
+    private final StorageModuleService storageModuleService;
+    private final TeamModuleService teamModuleService;
 
     @Override
     public StorageResponse uploadFile(CreateStorageRequest request, Member member) {
@@ -44,10 +41,8 @@ public class StorageCommandServiceImpl implements StorageCommandService {
         assert originalFileName != null;
         String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
 
-
         // 팀 관리 Entity 가져오기
-        TeamManage teamManage = teamManageRepository.findByMemberIdAndTeamId(member.getId(), teamId)
-                .orElseThrow(() -> new RuntimeException("TeamManage not found"));
+        TeamManage teamManage = teamModuleService.findTeamManageByMemberIdAndTeamId(member.getId(), teamId);
 
         // s3 파일 업로드
         String fileUrl = s3Provider.uploadFile(teamManage.getTeam().getId().toString(), file);
@@ -62,7 +57,7 @@ public class StorageCommandServiceImpl implements StorageCommandService {
                 .fileExtension(fileExtension)
                 .build();
 
-        teamDataRepository.save(teamData);
+        storageModuleService.save(teamData);
 
         return StorageResponse.builder()
                 .message("파일 업로드 성공")
@@ -70,20 +65,16 @@ public class StorageCommandServiceImpl implements StorageCommandService {
                 .build();
     }
 
-
     @Override
     public void deleteFile(Long teamId, Long storageId, Member member) {
-        TeamData teamData = teamDataRepository.findById(storageId)
-                .orElseThrow(() -> new IllegalArgumentException("파일이 존재하지 않습니다."));
-
-        TeamManage teamManage = teamManageRepository.findByMemberIdAndTeamId(member.getId(), teamId)
-                .orElseThrow(() -> new IllegalArgumentException("팀에 유저가 속해있지 않습니다."));
+        TeamData teamData = storageModuleService.findById(storageId);
+        if(!teamModuleService.existsTeamManageByMemberIdAndTeamId(member.getId(), teamId)){
+            throw new GeneralException(ErrorStatus.TEAM_MANAGE_NOT_FOUND);
+        }
 
         if (!teamData.getTeamManage().getTeam().getId().equals(teamId)) {
             throw new IllegalArgumentException("File does not belong to the specified team");
         }
-
         teamData.updateStatus(EntityStatus.DELETE);
-        teamDataRepository.save(teamData);
     }
 }

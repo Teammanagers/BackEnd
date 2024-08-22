@@ -1,8 +1,8 @@
 package kr.teammanagers.storage.presentation;
 
 import kr.teammanagers.auth.dto.PrincipalDetails;
-import kr.teammanagers.storage.application.StorageCommandService;
-import kr.teammanagers.storage.application.StorageQueryService;
+import kr.teammanagers.storage.application.command.StorageCommandService;
+import kr.teammanagers.storage.application.query.StorageQueryService;
 import kr.teammanagers.storage.dto.StorageDto;
 import kr.teammanagers.storage.dto.request.CreateStorageRequest;
 import kr.teammanagers.storage.dto.response.StorageResponse;
