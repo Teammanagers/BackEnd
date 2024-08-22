@@ -1,4 +1,4 @@
-package kr.teammanagers.calendar.application;
+package kr.teammanagers.calendar.application.query;
 
 import kr.teammanagers.calendar.dto.response.GetCalendar;
 import kr.teammanagers.calendar.dto.response.GetComingCalendarList;

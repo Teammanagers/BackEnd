@@ -1,4 +1,4 @@
-package kr.teammanagers.calendar.application;
+package kr.teammanagers.calendar.application.command;
 
 import kr.teammanagers.calendar.dto.request.CreateCalendar;
 import kr.teammanagers.calendar.dto.request.UpdateCalendar;
