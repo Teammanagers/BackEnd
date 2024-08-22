@@ -58,7 +58,7 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
         TeamManage teamManage = teamModuleService.getTeamManageByMemberIdAndTeamId(memberId, teamId);
 
         return scheduleModuleService.getScheduleByTeamManageId(teamManage.getId())
-                .map(schedule -> { return GetMySchedule.from(ScheduleDto.from(schedule)); })
+                .map(schedule -> GetMySchedule.from(ScheduleDto.from(schedule)))
                 .orElseGet(() -> {
                     TimeTable emptyTimeTable = TimeTable.from(IntStream.range(0, 48)
                             .mapToObj(i -> '0')
