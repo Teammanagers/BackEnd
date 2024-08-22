@@ -1,5 +1,6 @@
 package kr.teammanagers.tag.application.module;
 
+import kr.teammanagers.global.exception.GeneralException;
 import kr.teammanagers.member.domain.Member;
 import kr.teammanagers.memo.domain.Memo;
 import kr.teammanagers.tag.application.lambda.TagAction;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static kr.teammanagers.common.payload.code.status.ErrorStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,13 +25,63 @@ public class TagModuleServiceImpl implements TagModuleService {
     private final TagMemoRepository tagMemoRepository;
 
     @Override
-    public TagMemo saveTagMemo(final TagMemo tagMemo) {
-        return tagMemoRepository.save(tagMemo);
+    public <T> T save(final T entity, Class<T> clazz) {
+        if (clazz.equals(TagTeam.class)) {
+            return clazz.cast(tagTeamRepository.save((TagTeam) entity));
+        } else if (clazz.equals(TeamRole.class)) {
+            return clazz.cast(teamRoleRepository.save((TeamRole) entity));
+        } else if (clazz.equals(TagMemo.class)) {
+            return clazz.cast(tagMemoRepository.save((TagMemo) entity));
+        } else {
+            throw new IllegalArgumentException("Unsupported entity type: " + clazz);
+        }
+    }
+
+    @Override
+    public <T> T findByEntityIdAndTagId(final Long entityId, final Long tagId, Class<T> clazz) {
+        if (clazz.equals(TagTeam.class)) {
+            return clazz.cast(tagTeamRepository.findByTeamIdAndTagId(entityId, tagId)
+                    .orElseThrow(() -> new GeneralException(TAG_TEAM_NOT_FOUND)));
+        } else if (clazz.equals(TeamRole.class)) {
+            return clazz.cast(teamRoleRepository.findByTeamManageIdAndTagId(entityId, tagId)
+                    .orElseThrow(() -> new GeneralException(TAG_ROLE_NOT_FOUND)));
+        } else {
+            throw new IllegalArgumentException("Unsupported entity type: " + clazz);
+        }
+    }
+
+    @Override
+    public TagTeam findTagTeamByTeamIdAndTagId(final Long teamId, final Long tagId) {
+        return tagTeamRepository.findByTeamIdAndTagId(teamId, tagId)
+                .orElseThrow(() -> new GeneralException(TAG_TEAM_NOT_FOUND));
+    }
+
+    @Override
+    public List<ConfidentRole> findAllConfidentRoleByMemberId(final Long memberId) {
+        return confidentRoleRepository.findAllByMemberId(memberId);
     }
 
     @Override
     public List<TagMemo> findAllTagMemoByMemoId(final Long memoId) {
         return tagMemoRepository.findAllByMemoId(memoId);
+    }
+
+    @Override
+    public <T> void delete(final T entity, Class<T> clazz) {
+        if (clazz.equals(TagTeam.class)) {
+            tagTeamRepository.delete((TagTeam) entity);
+        } else if (clazz.equals(TeamRole.class)) {
+            teamRoleRepository.delete((TeamRole) entity);
+        } else if (clazz.equals(TagMemo.class)) {
+            tagMemoRepository.delete((TagMemo) entity);
+        } else {
+            throw new IllegalArgumentException("Unsupported entity type: " + clazz);
+        }
+    }
+
+    @Override
+    public void deleteTagTeam(final TagTeam tagTeam) {
+        tagTeamRepository.delete(tagTeam);
     }
 
     @Override

@@ -2,16 +2,24 @@ package kr.teammanagers.tag.application.module;
 
 import kr.teammanagers.member.domain.Member;
 import kr.teammanagers.memo.domain.Memo;
-import kr.teammanagers.tag.domain.ConfidentRole;
-import kr.teammanagers.tag.domain.Tag;
-import kr.teammanagers.tag.domain.TagMemo;
+import kr.teammanagers.tag.domain.*;
 
 import java.util.List;
 
 public interface TagModuleService {
-    TagMemo saveTagMemo(TagMemo tagMemo);
+    <T> T save(T entity, Class<T> clazz);
+
+    <T> T findByEntityIdAndTagId(Long entityId, Long tagId, Class<T> clazz);
+
+    TagTeam findTagTeamByTeamIdAndTagId(Long teamId, Long tagId);
+
+    List<ConfidentRole> findAllConfidentRoleByMemberId(Long memberId);
 
     List<TagMemo> findAllTagMemoByMemoId(Long memoId);
+
+    <T> void delete(T entity, Class<T> clazz);
+
+    void deleteTagTeam(TagTeam tagTeam);
 
     void deleteTagMemo(TagMemo tagMemo);
 

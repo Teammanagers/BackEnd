@@ -4,8 +4,6 @@ import kr.teammanagers.tag.application.module.TagModuleService;
 import kr.teammanagers.tag.domain.Tag;
 import kr.teammanagers.tag.domain.TagTeam;
 import kr.teammanagers.tag.domain.TeamRole;
-import kr.teammanagers.tag.repository.TagTeamRepository;
-import kr.teammanagers.tag.repository.TeamRoleRepository;
 import kr.teammanagers.tag.request.CreateRoleTag;
 import kr.teammanagers.tag.request.UpdateRoleTag;
 import kr.teammanagers.tag.request.UpdateTeamTag;
@@ -20,30 +18,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TagCommandServiceImpl implements TagCommandService {
 
-    private final TagTeamRepository tagTeamRepository;
     private final TagModuleService tagModuleService;
-    private final TeamRoleRepository teamRoleRepository;
     private final TeamManageRepository teamManageRepository;
 
     @Override
     public void updateTeamTag(final Long teamId, final Long tagId, final UpdateTeamTag request) {
-        TagTeam tagTeam = tagTeamRepository.findByTeamIdAndTagId(teamId, tagId)
-                .orElseThrow(RuntimeException::new);
-
+        TagTeam tagTeam = tagModuleService.findTagTeamByTeamIdAndTagId(teamId, tagId);
         Tag newTag = tagModuleService.findOrCreateTag(request.name());
 
         Long oldTagId = tagTeam.getTag().getId();
         tagTeam.setTag(newTag);
-        tagTeamRepository.save(tagTeam);
+        tagModuleService.save(tagTeam, TagTeam.class);
         tagModuleService.validateAndDeleteTagByTagId(oldTagId);
     }
 
     @Override
     public void deleteTeamTag(final Long teamId, final Long tagId) {
-        TagTeam tagTeam = tagTeamRepository.findByTeamIdAndTagId(teamId, tagId)
-                .orElseThrow(RuntimeException::new);            // TODO : 예외 처리 필요
+        TagTeam tagTeam = tagModuleService.findTagTeamByTeamIdAndTagId(teamId, tagId);
         Long oldTagId = tagTeam.getTag().getId();
-        tagTeamRepository.delete(tagTeam);
+        tagModuleService.delete(tagTeam, TagTeam.class);
         tagModuleService.validateAndDeleteTagByTagId(oldTagId);
     }
 
@@ -53,33 +46,31 @@ public class TagCommandServiceImpl implements TagCommandService {
                 .orElseThrow(RuntimeException::new);// TODO : 예외 처리 필요
 
         Tag tag = tagModuleService.findOrCreateTag(request.name());
-        teamRoleRepository.save(
+        tagModuleService.save(
                 TeamRole.builder()
                         .teamManage(teamManage)
                         .tag(tag)
-                        .build()
+                        .build(),
+                TeamRole.class
         );
     }
 
     @Override
     public void updateRoleTag(final Long teamManageId, final Long tagId, final UpdateRoleTag request) {
-        TeamRole teamRole = teamRoleRepository.findByTeamManageIdAndTagId(teamManageId, tagId)
-                .orElseThrow(RuntimeException::new);// TODO : 예외 처리 필요
-
+        TeamRole teamRole = tagModuleService.findByEntityIdAndTagId(teamManageId, tagId, TeamRole.class);
         Tag newTag = tagModuleService.findOrCreateTag(request.name());
 
         Long oldTagId = teamRole.getTag().getId();
         teamRole.setTag(newTag);
-        teamRoleRepository.save(teamRole);
+        tagModuleService.save(teamRole, TeamRole.class);
         tagModuleService.validateAndDeleteTagByTagId(oldTagId);
     }
 
     @Override
     public void deleteRoleTag(final Long teamManageId, final Long tagId) {
-        TeamRole teamRole = teamRoleRepository.findByTeamManageIdAndTagId(teamManageId, tagId)
-                .orElseThrow(RuntimeException::new);            // TODO : 예외 처리 필요
+        TeamRole teamRole = tagModuleService.findByEntityIdAndTagId(teamManageId, tagId, TeamRole.class);
         Long oldTagId = teamRole.getTag().getId();
-        teamRoleRepository.delete(teamRole);
+        tagModuleService.delete(teamRole, TeamRole.class);
         tagModuleService.validateAndDeleteTagByTagId(oldTagId);
     }
 }
