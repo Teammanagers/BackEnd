@@ -1,4 +1,4 @@
-package kr.teammanagers.member.application;
+package kr.teammanagers.member.application.command;
 
 import kr.teammanagers.member.dto.request.UpdateProfile;
 import org.springframework.web.multipart.MultipartFile;

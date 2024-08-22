@@ -1,15 +1,14 @@
-package kr.teammanagers.member.application;
+package kr.teammanagers.member.application.query;
 
 import kr.teammanagers.global.config.AmazonConfig;
 import kr.teammanagers.global.provider.AmazonS3Provider;
+import kr.teammanagers.member.application.module.MemberModuleService;
 import kr.teammanagers.member.domain.Comment;
 import kr.teammanagers.member.domain.Member;
 import kr.teammanagers.member.dto.response.*;
-import kr.teammanagers.member.repository.CommentRepository;
-import kr.teammanagers.member.repository.MemberRepository;
 import kr.teammanagers.storage.domain.TeamData;
 import kr.teammanagers.storage.repository.TeamDataRepository;
-import kr.teammanagers.tag.application.module.TagQueryModuleService;
+import kr.teammanagers.tag.application.module.TagModuleService;
 import kr.teammanagers.tag.domain.Tag;
 import kr.teammanagers.team.domain.Team;
 import kr.teammanagers.team.domain.TeamManage;
@@ -30,23 +29,21 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class MemberQueryServiceImpl implements MemberQueryService {
 
-    private final MemberRepository memberRepository;
-    private final CommentRepository commentRepository;
     private final TeamDataRepository teamDataRepository;
     private final TeamManageRepository teamManageRepository;
     private final TeamRepository teamRepository;
     private final TodoRepository todoRepository;
 
-    private final TagQueryModuleService tagQueryModuleService;
-
+    private final MemberModuleService memberModuleService;
+    private final TagModuleService tagModuleService;
     private final AmazonConfig amazonConfig;
     private final AmazonS3Provider amazonS3Provider;
 
     @Override
     public GetProfile getProfile(final Long authId) {
-        Member member = memberRepository.findById(authId).orElseThrow(RuntimeException::new);       // TODO : 예외 처리 필요
-        List<Tag> tagList = tagQueryModuleService.getAllConfidentRole(authId);
-        List<Comment> commentList = commentRepository.findAllByMemberId(authId);
+        Member member = memberModuleService.findMemberById(authId);
+        List<Tag> tagList = tagModuleService.getAllConfidentRole(authId);
+        List<Comment> commentList = memberModuleService.findCommentAllByMemberId(authId);
         String imageUrl = amazonS3Provider.generateUrl(amazonConfig.getMemberProfilePath(), member.getId());
         return GetProfile.of(member, tagList, commentList, imageUrl);
     }
@@ -56,7 +53,7 @@ public class MemberQueryServiceImpl implements MemberQueryService {
         List<MyTodoListDto> myTodoListDtos = teamManageRepository.findAllByMemberId(authId).stream()
                 .map(teamManage -> {
                     Team team = teamManage.getTeam();
-                    List<Tag> teamRoleTagList = tagQueryModuleService.getAllTeamRoleTag(teamManage.getId());
+                    List<Tag> teamRoleTagList = tagModuleService.getAllTeamRoleTag(teamManage.getId());
                     List<Todo> todoList = todoRepository.findAllByTeamManageId(teamManage.getId());
                     return MyTodoListDto.of(team, teamRoleTagList, todoList);
                 })
@@ -81,7 +78,7 @@ public class MemberQueryServiceImpl implements MemberQueryService {
                 .map(TeamManage::getMember)
                 .toList();
 
-        List<Tag> teamRoleList = tagQueryModuleService.getAllTeamRoleTag(
+        List<Tag> teamRoleList = tagModuleService.getAllTeamRoleTag(
                 teamManageList.stream()
                         .filter(teamManage -> teamManage.getId().equals(authId))
                         .findFirst()
@@ -92,16 +89,16 @@ public class MemberQueryServiceImpl implements MemberQueryService {
                 .flatMap(teamManage -> teamDataRepository.findAllByTeamManageId(teamManage.getId()).stream())
                 .toList();
 
-        return GetPortfolio.of(team, tagQueryModuleService.getAllTeamTag(teamId), memberList, teamRoleList, teamDataList);
+        return GetPortfolio.of(team, tagModuleService.getAllTeamTag(teamId), memberList, teamRoleList, teamDataList);
     }
 
     @Override
     public GetMemberTeam getMemberTeam(final Long authId) {
-        Member member = memberRepository.findById(authId).orElseThrow(RuntimeException::new);       // TODO : 예외 처리 필요
+        Member member = memberModuleService.findMemberById(authId);
         List<TeamDto> teamList = teamManageRepository.findAllByMemberId(authId).stream()
                 .map(TeamManage::getTeam)
                 .map(team -> {
-                    List<Tag> tagList = tagQueryModuleService.getAllTeamTag(team.getId());
+                    List<Tag> tagList = tagModuleService.getAllTeamTag(team.getId());
                     return TeamDto.from(team, tagList,
                             amazonS3Provider.generateUrl(amazonConfig.getTeamProfilePath(), team.getId()));
                 })

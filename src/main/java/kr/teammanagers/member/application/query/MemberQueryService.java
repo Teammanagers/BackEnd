@@ -1,4 +1,4 @@
-package kr.teammanagers.member.application;
+package kr.teammanagers.member.application.query;
 
 import kr.teammanagers.member.dto.response.*;
 

@@ -1,15 +1,13 @@
-package kr.teammanagers.member.application;
+package kr.teammanagers.member.application.command;
 
 import kr.teammanagers.global.config.AmazonConfig;
 import kr.teammanagers.global.provider.AmazonS3Provider;
+import kr.teammanagers.member.application.module.MemberModuleService;
 import kr.teammanagers.member.domain.Comment;
 import kr.teammanagers.member.domain.Member;
 import kr.teammanagers.member.dto.request.UpdateProfile;
-import kr.teammanagers.member.repository.CommentRepository;
-import kr.teammanagers.member.repository.MemberRepository;
-import kr.teammanagers.tag.application.module.TagCommandModuleService;
+import kr.teammanagers.tag.application.module.TagModuleService;
 import kr.teammanagers.tag.domain.ConfidentRole;
-import kr.teammanagers.tag.repository.ConfidentRoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,17 +20,14 @@ import java.util.List;
 @Transactional
 public class MemberCommandServiceImpl implements MemberCommandService {
 
-    private final MemberRepository memberRepository;
-    private final CommentRepository commentRepository;
-    private final ConfidentRoleRepository confidentRoleRepository;
-
-    private final TagCommandModuleService tagCommandModuleService;
+    private final MemberModuleService memberModuleService;
+    private final TagModuleService tagModuleService;
     private final AmazonConfig amazonConfig;
     private final AmazonS3Provider amazonS3Provider;
 
     @Override
     public void updateProfile(final Long authId, final UpdateProfile request, final MultipartFile imageFile) {
-        Member member = memberRepository.findById(authId).orElseThrow(RuntimeException::new);       // TODO : 예외 처리 필요
+        Member member = memberModuleService.findMemberById(authId);
 
         updateMemberName(request.name(), member);
         updateMemberPhoneNumber(request.phoneNumber(), member);
@@ -43,7 +38,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
     @Override
     public void updateCommentState(final Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(RuntimeException::new);     // TODO : 예외 처리 필요
+        Comment comment = memberModuleService.findCommentById(commentId);
         comment.updateIsHidden();
     }
 
@@ -78,13 +73,13 @@ public class MemberCommandServiceImpl implements MemberCommandService {
             return;
         }
 
-        List<ConfidentRole> currentRoles = confidentRoleRepository.findAllByMemberId(member.getId());
+        List<ConfidentRole> currentRoles = tagModuleService.findAllConfidentRoleByMemberId(member.getId());
         List<String> currentRoleNames = currentRoles.stream()
                 .map(role -> role.getTag().getName())
                 .toList();
 
-        tagCommandModuleService.addNewConfidentRoles(requestedRoles, currentRoleNames, member);
-        tagCommandModuleService.removeOldConfidentRoles(requestedRoles, currentRoles);
+        tagModuleService.addNewConfidentRoles(requestedRoles, currentRoleNames, member);
+        tagModuleService.removeOldConfidentRoles(requestedRoles, currentRoles);
     }
 
     private void updateProfileImageIfPresent(final MultipartFile imageFile, final Member member) {
