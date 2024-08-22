@@ -22,7 +22,7 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService{
 
     @Override
     public void create(Long memberId, Long teamId, CreateSchedule request) {
-        TeamManage teamManage = teamModuleService.getTeamManageByMemberIdAndTeamId(memberId, teamId);
+        TeamManage teamManage = teamModuleService.findTeamManageByMemberIdAndTeamId(memberId, teamId);
 
         Schedule newSchedule = request.toSchedule();
         newSchedule.setTeamManage(teamManage);
@@ -32,7 +32,7 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService{
 
     @Override
     public void update(Long memberId, Long teamId, UpdateSchedule request) {
-        TeamManage teamManage = teamModuleService.getTeamManageByMemberIdAndTeamId(memberId, teamId);
+        TeamManage teamManage = teamModuleService.findTeamManageByMemberIdAndTeamId(memberId, teamId);
 
         Schedule scheduleForUpdate = scheduleModuleService.getScheduleByTeamManageId(teamManage.getId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.SCHEDULE_NOT_FOUND));
@@ -50,7 +50,7 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService{
 
     @Override
     public void delete(Long teamManageId) {
-        TeamManage teamManage = teamModuleService.getTeamManageById(teamManageId);
+        TeamManage teamManage = teamModuleService.findById(teamManageId, TeamManage.class);
 
         scheduleModuleService.deleteScheduleByTeamManageId(teamManage.getId());
     }
