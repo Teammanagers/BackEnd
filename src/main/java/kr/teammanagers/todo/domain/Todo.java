@@ -21,7 +21,7 @@ public class Todo extends AuditingField {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.PROCEEDING;
 
     // Mapping
     @Setter
