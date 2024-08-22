@@ -1,4 +1,4 @@
-package kr.teammanagers.feedback.application;
+package kr.teammanagers.feedback.application.query;
 
 import kr.teammanagers.feedback.dto.FeedbackDto;
 import kr.teammanagers.member.domain.Member;

@@ -1,4 +1,4 @@
-package kr.teammanagers.feedback.application;
+package kr.teammanagers.feedback.application.command;
 
 import kr.teammanagers.feedback.dto.request.CreateFeedbackRequest;
 import kr.teammanagers.feedback.dto.request.UpdateFeedbackRequest;
