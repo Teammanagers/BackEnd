@@ -17,6 +17,8 @@ public interface TagModuleService {
 
     List<TeamRole> findAllTeamRoleByTeamManageId(Long teamManageId);
 
+    List<TagTeam> findAllTagTeamByTeamId(Long teamId);
+
     List<TagMemo> findAllTagMemoByMemoId(Long memoId);
 
     <T> void delete(T entity, Class<T> clazz);

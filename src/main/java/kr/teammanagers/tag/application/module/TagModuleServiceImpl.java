@@ -67,6 +67,11 @@ public class TagModuleServiceImpl implements TagModuleService {
     }
 
     @Override
+    public List<TagTeam> findAllTagTeamByTeamId(final Long teamId) {
+        return tagTeamRepository.findAllByTeamId(teamId);
+    }
+
+    @Override
     public List<TagMemo> findAllTagMemoByMemoId(final Long memoId) {
         return tagMemoRepository.findAllByMemoId(memoId);
     }
