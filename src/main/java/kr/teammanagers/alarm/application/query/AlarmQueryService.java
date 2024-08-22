@@ -1,4 +1,4 @@
-package kr.teammanagers.alarm.application;
+package kr.teammanagers.alarm.application.query;
 
 import kr.teammanagers.alarm.dto.response.GetAlarm;
 
