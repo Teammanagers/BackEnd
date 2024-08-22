@@ -20,6 +20,17 @@ public class MemberModuleServiceImpl implements MemberModuleService {
     private final CommentRepository commentRepository;
 
     @Override
+    public <T> T save(final T entity, Class<T> clazz) {
+        if (clazz.equals(Member.class)) {
+            return clazz.cast(memberRepository.save((Member) entity));
+        } else if (clazz.equals(Comment.class)) {
+            return clazz.cast(commentRepository.save((Comment) entity));
+        } else {
+            throw new IllegalArgumentException("Unsupported entity type: " + clazz);
+        }
+    }
+
+    @Override
     public Member findMemberById(final Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(MEMBER_NOT_FOUND));

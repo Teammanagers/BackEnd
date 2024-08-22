@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface MemberModuleService {
 
+    <T> T save(T entity, Class<T> clazz);
+
     Member findMemberById(Long memberId);
 
     Comment findCommentById(Long commentId);

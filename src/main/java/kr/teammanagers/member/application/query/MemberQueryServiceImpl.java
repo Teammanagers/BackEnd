@@ -80,7 +80,7 @@ public class MemberQueryServiceImpl implements MemberQueryService {
 
         List<Tag> teamRoleList = tagModuleService.getAllTeamRoleTag(
                 teamManageList.stream()
-                        .filter(teamManage -> teamManage.getId().equals(authId))
+                        .filter(teamManage -> teamManage.getMember().getId().equals(authId))
                         .findFirst()
                         .orElseThrow(RuntimeException::new)
                         .getId());
