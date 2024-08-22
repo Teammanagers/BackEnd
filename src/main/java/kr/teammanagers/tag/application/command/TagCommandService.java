@@ -1,4 +1,4 @@
-package kr.teammanagers.tag.application;
+package kr.teammanagers.tag.application.command;
 
 import kr.teammanagers.tag.request.CreateRoleTag;
 import kr.teammanagers.tag.request.UpdateRoleTag;

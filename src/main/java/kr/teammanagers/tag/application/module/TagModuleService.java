@@ -8,7 +8,13 @@ import kr.teammanagers.tag.domain.TagMemo;
 
 import java.util.List;
 
-public interface TagCommandModuleService {
+public interface TagModuleService {
+    TagMemo saveTagMemo(TagMemo tagMemo);
+
+    List<TagMemo> findAllTagMemoByMemoId(Long memoId);
+
+    void deleteTagMemo(TagMemo tagMemo);
+
     Tag findOrCreateTag(String tagName);
 
     void validateAndDeleteTagByTagId(Long tagId);
@@ -20,4 +26,10 @@ public interface TagCommandModuleService {
     void removeOldConfidentRoles(List<String> requestedRoles, List<ConfidentRole> currentRoles);
 
     void removeOldTagMemo(List<String> requestedTagMemo, List<TagMemo> currentTagMemoNames);
+
+    List<Tag> getAllConfidentRole(Long authId);
+
+    List<Tag> getAllTeamTag(Long teamId);
+
+    List<Tag> getAllTeamRoleTag(Long teamManageId);
 }

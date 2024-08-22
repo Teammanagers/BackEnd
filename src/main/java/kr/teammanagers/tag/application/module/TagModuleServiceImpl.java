@@ -4,26 +4,37 @@ import kr.teammanagers.member.domain.Member;
 import kr.teammanagers.memo.domain.Memo;
 import kr.teammanagers.tag.application.lambda.TagAction;
 import kr.teammanagers.tag.application.lambda.TagRemovalAction;
-import kr.teammanagers.tag.domain.ConfidentRole;
-import kr.teammanagers.tag.domain.Tag;
-import kr.teammanagers.tag.domain.TagMemo;
+import kr.teammanagers.tag.domain.*;
 import kr.teammanagers.tag.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
-public class TagCommandModuleServiceImpl implements TagCommandModuleService {
+public class TagModuleServiceImpl implements TagModuleService {
 
     private final TagRepository tagRepository;
     private final ConfidentRoleRepository confidentRoleRepository;
     private final TagTeamRepository tagTeamRepository;
     private final TeamRoleRepository teamRoleRepository;
     private final TagMemoRepository tagMemoRepository;
+
+    @Override
+    public TagMemo saveTagMemo(final TagMemo tagMemo) {
+        return tagMemoRepository.save(tagMemo);
+    }
+
+    @Override
+    public List<TagMemo> findAllTagMemoByMemoId(final Long memoId) {
+        return tagMemoRepository.findAllByMemoId(memoId);
+    }
+
+    @Override
+    public void deleteTagMemo(final TagMemo tagMemo) {
+        tagMemoRepository.delete(tagMemo);
+    }
 
     @Override
     public Tag findOrCreateTag(final String tagName) {
@@ -69,6 +80,27 @@ public class TagCommandModuleServiceImpl implements TagCommandModuleService {
             tagMemoRepository.delete(tagMemo);
             validateAndDeleteTagByTagId(tagId);
         });
+    }
+
+    @Override
+    public List<Tag> getAllConfidentRole(final Long authId) {
+        return confidentRoleRepository.findAllByMemberId(authId).stream()
+                .map(ConfidentRole::getTag)
+                .toList();
+    }
+
+    @Override
+    public List<Tag> getAllTeamTag(final Long teamId) {
+        return tagTeamRepository.findAllByTeamId(teamId).stream()
+                .map(TagTeam::getTag)
+                .toList();
+    }
+
+    @Override
+    public List<Tag> getAllTeamRoleTag(final Long teamManageId) {
+        return teamRoleRepository.findAllByTeamManageId(teamManageId).stream()
+                .map(TeamRole::getTag)
+                .toList();
     }
 
     private <T> void removeOldTags(List<String> requestedTags, List<T> currentTags, TagRemovalAction<T> action) {
