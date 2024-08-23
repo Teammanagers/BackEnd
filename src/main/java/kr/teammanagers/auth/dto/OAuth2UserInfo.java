@@ -6,7 +6,8 @@ import lombok.Builder;
 
 import java.util.Map;
 
-import static kr.teammanagers.global.exception.ErrorCode.ILLEGAL_REGISTRATION_ID;
+import static kr.teammanagers.common.payload.code.status.ErrorStatus.AUTH_ILLEGAL_REGISTRATION_ID;
+
 
 @Builder
 public record OAuth2UserInfo(
@@ -22,7 +23,7 @@ public record OAuth2UserInfo(
             case "google" -> ofGoogle(attributes);
             case "kakao" -> ofKakao(attributes);
             case "naver" -> ofNaver(attributes);
-            default -> throw new AuthException(ILLEGAL_REGISTRATION_ID.getMessage());
+            default -> throw new AuthException(AUTH_ILLEGAL_REGISTRATION_ID.getMessage());
         };
     }
 

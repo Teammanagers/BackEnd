@@ -3,9 +3,8 @@ package kr.teammanagers.auth.handler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.teammanagers.auth.constant.AuthConstant;
 import kr.teammanagers.auth.dto.PrincipalDetails;
-import kr.teammanagers.global.provider.TokenProvider;
+import kr.teammanagers.auth.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -33,7 +32,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication) throws IOException, ServletException {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         String accessToken = tokenProvider.generateAccessToken(authentication);
-        tokenProvider.generateRefreshToken(authentication, accessToken);
+        tokenProvider.generateRefreshToken(authentication);
 
         response.sendRedirect(
                 UriComponentsBuilder.fromUriString(redirectUrl)
