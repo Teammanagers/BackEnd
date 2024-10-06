@@ -4,6 +4,7 @@ import kr.teammanagers.auth.handler.OAuth2FailureHandler;
 import kr.teammanagers.auth.handler.OAuth2SuccessHandler;
 import kr.teammanagers.auth.Application.CustomOAuth2UserService;
 import kr.teammanagers.auth.filter.TokenAuthenticationFilter;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
+@Getter
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
@@ -64,8 +66,10 @@ public class SecurityConfig {
                                         new AntPathRequestMatcher("/notification/subscribe"),
                                         new AntPathRequestMatcher("/login/oauth2/code/**"),
                                         new AntPathRequestMatcher("/oauth2/**"),
-                                        new AntPathRequestMatcher("/health")
-
+                                        new AntPathRequestMatcher("/health"),
+                                        new AntPathRequestMatcher("/v3/api-docs/**"),
+                                        new AntPathRequestMatcher("/swagger-resources/**"),
+                                        new AntPathRequestMatcher("/swagger-ui/**")
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )
