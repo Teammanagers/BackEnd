@@ -47,25 +47,18 @@ public class CalendarCommandServiceImpl implements CalendarCommandService {
         Calendar calendar = calendarModuleService.findById(calendarId, Calendar.class);
         calendar.updateTitle(request.title());
         calendar.updateContent(request.content());
-        List<Long> teamManageIdList = calendarModuleService.findAllTeamCalendarByCalendarId(calendarId)
-                .stream().map(teamCalendar -> teamCalendar.getTeamManage().getId())
-                .toList();
 
-        List<Long> newTeamManageIdList = request.participants();
+        calendarModuleService.deleteAllTeamCalendarByCalendarId(calendarId);
 
-        teamManageIdList.stream().filter(teamManageId -> !newTeamManageIdList.contains(teamManageId))
-                .forEach(teamManageId -> {
-                    TeamCalendar teamCalendar = calendarModuleService.findTeamCalendarByCalendarIdAndTeamId(calendarId, teamManageId);
-                    calendarModuleService.delete(teamCalendar, TeamCalendar.class);
-                });
-
-        newTeamManageIdList.stream().filter(newTeamManageId -> !teamManageIdList.contains(newTeamManageId))
+        request.participants()
                 .forEach(newTeamManageId -> {
+                    TeamManage teamManage = teamModuleService.findById(newTeamManageId, TeamManage.class);
                     TeamCalendar newTeamCalendar = TeamCalendar.builder().isAlarmed(false).build();
                     newTeamCalendar.setCalendar(calendar);
-                    newTeamCalendar.setTeamManage(teamModuleService.findById(newTeamManageId, TeamManage.class));
+                    newTeamCalendar.setTeamManage(teamManage);
                     calendarModuleService.save(newTeamCalendar, TeamCalendar.class);
                 });
+
     }
 
     @Override
