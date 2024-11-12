@@ -34,10 +34,10 @@ public class TodoCommandServiceImpl implements TodoCommandService {
     }
 
     @Override
-    public void updateTodoStatus(Long todoId) {
+    public void updateTodoStatus(Long todoId, Integer option) {
         Todo todoForUpdate = todoModuleService.getTodoById(todoId);
 
-        todoForUpdate.switchStatus();
+        todoForUpdate.changeStatus(option);
     }
 
     @Override

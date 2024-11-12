@@ -6,6 +6,6 @@ import kr.teammanagers.todo.dto.request.UpdateTodo;
 public interface TodoCommandService {
     void createTodo(CreateTodo request, Long teamManageId);
     void updateTodoTitle(UpdateTodo request, Long todoId);
-    void updateTodoStatus(Long todoId);
+    void updateTodoStatus(Long todoId, Integer statusNum);
     void deleteTodo(Long todoId);
 }

@@ -50,9 +50,10 @@ public class TodoRestController {
 
     @PatchMapping("/todo/{todoId}/state")
     public ApiPayload<Void> updateStatus(@AuthenticationPrincipal final PrincipalDetails auth,
-                                         @PathVariable(name = "todoId") final Long todoId) {
+                                         @PathVariable(name = "todoId") final Long todoId,
+                                         @RequestParam(name = "option") final Integer option) {
 
-        todoCommandService.updateTodoStatus(todoId);
+        todoCommandService.updateTodoStatus(todoId, option);
 
         return ApiPayload.onSuccess();
     }
