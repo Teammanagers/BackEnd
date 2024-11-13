@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,10 @@ public class TodoQueryServiceImpl implements TodoQueryService {
     @Override
     public GetTodoList getTodoList(Long memberId, Long teamId) {
 
+        int pending = 0;
+        int proceeding = 0;
+        int completed = 0;
+
         List<TodoListDto> teamTodoListDtoList = teamModuleService.findTeamManageAllByTeamId(teamId).stream()
                 .map(teamManage -> {
                     List<TodoDto> todoDtoList = todoModuleService.getTodoListByTeamManageId(teamManage.getId()).stream()
@@ -36,19 +41,25 @@ public class TodoQueryServiceImpl implements TodoQueryService {
                 }).toList();
 
         List<TodoDto> flatTeamTodoDtoList = teamTodoListDtoList.stream()
-                .flatMap(todoListDto -> todoListDto.todoList().stream()).toList();
+                .flatMap(todoListDto -> todoListDto.todoList().stream())
+                .toList();
 
-        Integer progress;
+        pending = (int) flatTeamTodoDtoList.stream().filter(todoDto -> todoDto.status() == Status.PENDING).count();
+        proceeding = (int) flatTeamTodoDtoList.stream().filter(todoDto -> todoDto.status() == Status.PROCEEDING).count();
+        completed = (int) flatTeamTodoDtoList.stream().filter(todoDto -> todoDto.status() == Status.COMPLETED).count();
 
-        if (flatTeamTodoDtoList.isEmpty()) {
-            progress = 0;
-        } else {
-            progress = flatTeamTodoDtoList.stream().filter(todoDto -> todoDto.status() == Status.COMPLETED).toList().size() * 100
-                    / flatTeamTodoDtoList.size();
-        }
+
+//        Integer progress;
+//
+//        if (flatTeamTodoDtoList.isEmpty()) {
+//            progress = 0;
+//        } else {
+//            progress = flatTeamTodoDtoList.stream().filter(todoDto -> todoDto.status() == Status.COMPLETED).toList().size() * 100
+//                    / flatTeamTodoDtoList.size();
+//        }
 
         Long ownerTeamManageId = teamModuleService.findTeamManageByMemberIdAndTeamId(memberId, teamId).getId();
 
-        return GetTodoList.of(ownerTeamManageId, teamTodoListDtoList, progress);
+        return GetTodoList.of(ownerTeamManageId, teamTodoListDtoList, pending, proceeding, completed);
     }
 }

@@ -10,13 +10,17 @@ import java.util.List;
 public record GetTodoList(
         Long ownerTeamManageId,
         List<TodoListDto> teamTodoList,
-        Integer progress
+        Integer pending,
+        Integer proceeding,
+        Integer completed
 ) {
-    public static GetTodoList of(Long ownerTeamManageId, List<TodoListDto> teamTodoList, Integer progress) {
+    public static GetTodoList of(Long ownerTeamManageId, List<TodoListDto> teamTodoList, Integer pending, Integer proceeding, Integer completed) {
         return GetTodoList.builder()
                 .ownerTeamManageId(ownerTeamManageId)
                 .teamTodoList(teamTodoList)
-                .progress(progress)
+                .pending(pending)
+                .proceeding(proceeding)
+                .completed(completed)
                 .build();
     }
 }
