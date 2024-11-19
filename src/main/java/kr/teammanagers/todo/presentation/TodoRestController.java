@@ -72,7 +72,7 @@ public class TodoRestController {
     public ApiPayload<Void> uploadTodoImage(@AuthenticationPrincipal final PrincipalDetails auth,
                                             @PathVariable(name = "todoId") final Long todoId,
                                             @RequestParam(name = "teamId") final Long teamId,
-                                            @RequestPart final MultipartFile image) {
+                                            @RequestPart(name = "image") final MultipartFile image) {
 
         todoCommandService.uploadTodoImage(teamId, todoId, image);
 
