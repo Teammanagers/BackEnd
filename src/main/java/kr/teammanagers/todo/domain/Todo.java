@@ -23,6 +23,9 @@ public class Todo extends AuditingField {
     @Enumerated(EnumType.STRING)
     private Status status = Status.PENDING;
 
+    @Setter
+    private String imageUrl;
+
     // Mapping
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)

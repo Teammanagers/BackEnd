@@ -11,6 +11,7 @@ import kr.teammanagers.todo.dto.response.GetTodoList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api")
@@ -65,5 +66,16 @@ public class TodoRestController {
         todoCommandService.deleteTodo(todoId);
 
         return ApiPayload.onSuccess(null);
+    }
+
+    @PostMapping("/todo/{todoId}/image")
+    public ApiPayload<Void> uploadTodoImage(@AuthenticationPrincipal final PrincipalDetails auth,
+                                            @PathVariable(name = "todoId") final Long todoId,
+                                            @RequestParam(name = "teamId") final Long teamId,
+                                            @RequestPart final MultipartFile image) {
+
+        todoCommandService.uploadTodoImage(teamId, todoId, image);
+
+        return ApiPayload.onSuccess();
     }
 }

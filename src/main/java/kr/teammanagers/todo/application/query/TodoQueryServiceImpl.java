@@ -27,9 +27,9 @@ public class TodoQueryServiceImpl implements TodoQueryService {
     @Override
     public GetTodoList getTodoList(Long memberId, Long teamId) {
 
-        int pending = 0;
-        int proceeding = 0;
-        int completed = 0;
+        int pending;
+        int proceeding;
+        int completed;
 
         List<TodoListDto> teamTodoListDtoList = teamModuleService.findTeamManageAllByTeamId(teamId).stream()
                 .map(teamManage -> {

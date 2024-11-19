@@ -78,6 +78,7 @@ cloud:
         member-profile: ${BUCKET_MEMBER_PROFILE_FOLDER}
         team-profile: ${BUCKET_TEAM_PROFILE_FOLDER}
         team-data: ${BUCKET_TEAM_DATA_FOLDER}
+        team-todo: ${BUCKET_TEAM_TODO_FOLDER}
     region:
       static: ap-northeast-2 # Region (? ??? ??)
     stack:

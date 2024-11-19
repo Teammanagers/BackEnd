@@ -39,6 +39,9 @@ public class AmazonConfig {
     @Value("${cloud.aws.s3.path.team-data}")
     private String teamDataPath;
 
+    @Value("${cloud.aws.s3.path.team-todo}")
+    private String todoImagePath;
+
     @PostConstruct
     public void init() {
         this.awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
