@@ -26,6 +26,14 @@ pipeline {
             }
         }
 
+        stage('Check ENV') {
+            steps {
+                withCredentials([string(credentialsId: 'env-vars', variable: 'ENV_VARS')]) {
+                    sh 'echo "$ENV_VARS"'
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 // Gradle 빌드 실행 (테스트 제외)
