@@ -40,9 +40,9 @@ pipeline {
             steps {
                 // Docker Hub 로그인, 이미지 빌드, 푸시
                 sh '''
-                sudo docker login -u $DOCKER_CREDENTIALS_USR -p $DOCKER_CREDENTIALS_PSW
-                sudo docker build -t $DOCKER_IMAGE:latest .
-                sudo docker push $DOCKER_IMAGE:latest
+                docker login -u $DOCKER_CREDENTIALS_USR -p $DOCKER_CREDENTIALS_PSW
+                docker build -t $DOCKER_IMAGE:latest .
+                docker push $DOCKER_IMAGE:latest
             '''
             }
         }
