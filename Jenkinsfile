@@ -16,20 +16,22 @@ pipeline {
 
         stage('Create ENV file') {
             steps {
-                withCredentials([string(credentialsId: 'env-vars', variable: 'ENV_VARS')]) {
-                    // Jenkins에 저장된 환경변수를 .env 파일로 생성
+                withCredentials([file(credentialsId: 'env-file', variable: 'ENV_FILE')]) {
                     sh '''
-                    touch .env
-                    echo "$ENV_VARS" >> .env
-                '''
+                        cp "$ENV_FILE" .env
+                    '''
                 }
             }
         }
 
         stage('Check ENV') {
             steps {
-                withCredentials([string(credentialsId: 'env-vars', variable: 'ENV_VARS')]) {
-                    sh 'echo "$ENV_VARS"'
+                withCredentials([string(credentialsId: 'env-file', variable: 'ENV_FILE')]) {
+                    sh '''
+                        echo "=== ENV File Contents ==="
+                        cat "$ENV_FILE"
+                        echo "======================="
+                    '''
                 }
             }
         }
@@ -38,9 +40,9 @@ pipeline {
             steps {
                 // Gradle 빌드 실행 (테스트 제외)
                 sh '''
-                chmod +x gradlew
-                ./gradlew clean build -x test
-            '''
+                    chmod +x gradlew
+                    ./gradlew clean build -x test
+                '''
             }
         }
 
@@ -51,7 +53,7 @@ pipeline {
                 docker login -u $DOCKER_CREDENTIALS_USR -p $DOCKER_CREDENTIALS_PSW
                 docker build -t $DOCKER_IMAGE:latest .
                 docker push $DOCKER_IMAGE:latest
-            '''
+                '''
             }
         }
 
@@ -67,7 +69,7 @@ pipeline {
                         sudo docker run -e TZ=Asia/Seoul -d --name ${DOCKER_APP_NAME} -p 8080:8080 $DOCKER_IMAGE:latest
                         sudo docker container prune -f
                     "
-                '''
+                    '''
                 }
             }
         }
