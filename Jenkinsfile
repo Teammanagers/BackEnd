@@ -31,7 +31,7 @@ pipeline {
                 // Gradle 빌드 실행 (테스트 제외)
                 sh '''
                 chmod +x gradlew
-                ./gradlew --no-daemon clean build -x test
+                ./gradlew clean build -x test
             '''
             }
         }
