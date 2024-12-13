@@ -26,7 +26,7 @@ pipeline {
 
         stage('Check ENV') {
             steps {
-                withCredentials([string(credentialsId: 'env-file', variable: 'ENV_FILE')]) {
+                withCredentials([file(credentialsId: 'env-file', variable: 'ENV_FILE')]) {
                     sh '''
                         echo "=== ENV File Contents ==="
                         cat "$ENV_FILE"
