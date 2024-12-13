@@ -40,9 +40,9 @@ pipeline {
             steps {
                 // Docker Hub 로그인, 이미지 빌드, 푸시
                 sh '''
-                docker login -u $DOCKER_CREDENTIALS_USR -p $DOCKER_CREDENTIALS_PSW
-                docker build -t $DOCKER_IMAGE:latest .
-                docker push $DOCKER_IMAGE:latest
+                sudo docker login -u $DOCKER_CREDENTIALS_USR -p $DOCKER_CREDENTIALS_PSW
+                sudo docker build -t $DOCKER_IMAGE:latest .
+                sudo docker push $DOCKER_IMAGE:latest
             '''
             }
         }
@@ -53,11 +53,11 @@ pipeline {
                     // EC2 서버에 SSH로 접속하여 새 도커 이미지 배포
                     sh '''
                     ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "
-                        docker pull $DOCKER_IMAGE:latest
-                        docker stop ${DOCKER_APP_NAME} || true
-                        docker rm ${DOCKER_APP_NAME} || true
-                        docker run -e TZ=Asia/Seoul -d --name ${DOCKER_APP_NAME} -p 8080:8080 $DOCKER_IMAGE:latest
-                        docker container prune -f
+                        sudo docker pull $DOCKER_IMAGE:latest
+                        sudo docker stop ${DOCKER_APP_NAME} || true
+                        sudo docker rm ${DOCKER_APP_NAME} || true
+                        sudo docker run -e TZ=Asia/Seoul -d --name ${DOCKER_APP_NAME} -p 8080:8080 $DOCKER_IMAGE:latest
+                        sudo docker container prune -f
                     "
                 '''
                 }
